@@ -13,41 +13,41 @@
         :root { --rosa-pastel: #FFF5F5; --cafe-suave: #A67B7B; --dorado-tenue: #D4A5A5; --texto: #5A4444; }
         body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--rosa-pastel); color: var(--texto); }
         
-        #pantalla-bienvenida { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: white; }
         #panel-inicio, #vista-sub-menu, #seccion-contenido { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; text-align: center; }
 
         .grid-botones { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
         .card { background: white; padding: 40px 20px; border: 1px solid #eee; cursor: pointer; transition: 0.3s; border-radius: 8px; position: relative; }
-        .card:hover { border-color: var(--dorado-tenue); transform: translateY(-3px); }
         .card h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; color: var(--cafe-suave); font-size: 0.9rem; margin: 0; }
 
         .bloque-blanco { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left; max-width: 850px; margin: 0 auto; }
         
-        /* Estilos del Formulario de Personal */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        /* Contenedor de Foto */
+        .foto-registro { text-align: center; margin-bottom: 20px; }
+        .circulo-perfil { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--dorado-tenue); margin: 0 auto 10px; overflow: hidden; background: #fafafa; display: flex; align-items: center; justify-content: center; }
+        .circulo-perfil img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .full-width { grid-column: span 2; }
-        label { font-size: 0.75rem; font-weight: bold; color: var(--cafe-suave); display: block; margin-bottom: 2px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 5px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
+        label { font-size: 0.7rem; font-weight: bold; color: var(--cafe-suave); display: block; margin-bottom: 2px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
         
-        button { padding: 10px 15px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s; }
-        .btn-principal { background: var(--cafe-suave); color: white; width: 100%; margin-top: 10px; letter-spacing: 1px; }
-        .btn-edit { background: #eef2ff; color: #4f46e5; margin-right: 5px; font-size: 0.7rem; }
-        .btn-delete { background: #fef2f2; color: #dc2626; font-size: 0.7rem; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--rosa-pastel); font-size: 0.8rem; color: var(--cafe-suave); }
-        td { padding: 12px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
+        .btn-principal { background: var(--cafe-suave); color: white; width: 100%; padding: 12px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
 
-        .ficha-empleado { background: #fff; border: 1px solid #eee; padding: 20px; border-radius: 10px; margin-bottom: 15px; position: relative; line-height: 1.6; }
-        .ficha-empleado strong { color: var(--cafe-suave); }
-        .accion-flotante { position: absolute; top: 15px; right: 15px; display: flex; gap: 5px; }
+        /* Ficha Estilo CV */
+        .ficha-cv { background: white; border-radius: 10px; padding: 20px; margin-top: 20px; display: flex; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; align-items: flex-start; }
+        .foto-cv { width: 100px; height: 120px; border-radius: 5px; object-fit: cover; background: #f0f0f0; border: 1px solid #eee; }
+        .datos-cv { flex: 1; text-align: left; }
+        .datos-cv h4 { margin: 0 0 10px; font-family: 'Cinzel'; color: var(--cafe-suave); font-size: 1.1rem; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px; }
+        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; }
+        .grid-info div { border-bottom: 1px solid #fafafa; padding: 2px 0; }
+        .btn-borrar { position: absolute; top: 15px; right: 15px; color: #ffbcbc; cursor: pointer; background: none; border: none; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <div id="pantalla-bienvenida">
+    <div id="pantalla-bienvenida" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: white;">
         <h1 style="font-family:'Cinzel'; color: var(--cafe-suave);">PLANIFICADOR</h1>
-        <button onclick="cambiarVista('panel-inicio')" style="background:transparent; border:1px solid var(--dorado-tenue); padding:10px 40px; color:var(--cafe-suave); letter-spacing:3px;">INGRESAR</button>
+        <button onclick="cambiarVista('panel-inicio')" style="background:transparent; border:1px solid var(--dorado-tenue); padding:10px 40px; color:var(--cafe-suave); letter-spacing:3px; cursor:pointer;">INGRESAR</button>
     </div>
 
     <div id="panel-inicio">
@@ -60,7 +60,7 @@
     </div>
 
     <div id="vista-sub-menu">
-        <button onclick="cambiarVista('panel-inicio')" style="float:left; background:none; color:var(--dorado-tenue);">← INICIO</button>
+        <button onclick="cambiarVista('panel-inicio')" style="float:left; background:none; color:var(--dorado-tenue); cursor:pointer;">← INICIO</button>
         <h2 id="nombre-sector-titulo" style="font-family:'Cinzel'; letter-spacing:5px;"></h2>
         <div class="grid-botones">
             <div class="card" onclick="abrirSeccion('inventario')"><h3>📦 INVENTARIO</h3></div>
@@ -71,7 +71,7 @@
     </div>
 
     <div id="seccion-contenido">
-        <button onclick="cambiarVista('vista-sub-menu')" style="float:left; background:none; color:var(--dorado-tenue);">← VOLVER</button>
+        <button onclick="cambiarVista('vista-sub-menu')" style="float:left; background:none; color:var(--dorado-tenue); cursor:pointer;">← VOLVER</button>
         <h2 id="titulo-seccion" style="font-family:'Cinzel';"></h2>
         <div id="area-trabajo"></div>
     </div>
@@ -90,147 +90,124 @@
         const db = firebase.database();
 
         let sectorActivo = "";
-        let inventarioLocal = {};
-        let idEdicion = null;
+        let fotoCargada = "";
 
         function cambiarVista(id) {
             document.querySelectorAll('body > div').forEach(div => div.style.display = 'none');
             document.getElementById(id).style.display = 'block';
-            idEdicion = null; 
         }
 
         function seleccionarNegocio(id) {
             sectorActivo = id;
             document.getElementById('nombre-sector-titulo').innerText = id.replace('_', ' ');
             cambiarVista('vista-sub-menu');
-            db.ref(`negocios/${sectorActivo}/inventario`).on('value', snap => { inventarioLocal = snap.val() || {}; });
         }
 
         function abrirSeccion(tipo) {
             const area = document.getElementById('area-trabajo');
-            const titulo = document.getElementById('titulo-seccion');
             cambiarVista('seccion-contenido');
-            
+            document.getElementById('titulo-seccion').innerText = "GESTIÓN DE " + tipo.toUpperCase();
+
             if(tipo === 'personal') {
-                titulo.innerText = "REGISTRO DE PERSONAL";
                 area.innerHTML = `
                     <div class="bloque-blanco">
+                        <div class="foto-registro">
+                            <div class="circulo-perfil" id="preview-perfil">👤</div>
+                            <input type="file" id="input-foto" style="display:none" onchange="cargarFoto(this)">
+                            <button onclick="document.getElementById('input-foto').click()" style="font-size:0.6rem; background:none; border:1px solid #ddd; padding:5px; cursor:pointer;">SUBIR FOTO</button>
+                        </div>
                         <div class="form-grid">
-                            <div><label>Nombre Completo</label><input type="text" id="per-nombre"></div>
-                            <div><label>Fecha de Nacimiento</label><input type="date" id="per-fecha"></div>
-                            <div><label>País / Nacionalidad</label><input type="text" id="per-pais"></div>
-                            <div><label>Ciudad / Provincia</label><input type="text" id="per-ciudad"></div>
-                            <div><label>Teléfono (WhatsApp)</label><input type="text" id="per-tel"></div>
-                            <div><label>Documento (C.I.)</label><input type="text" id="per-doc"></div>
-                            <div><label>Estado Civil</label><input type="text" id="per-civil"></div>
-                            <div><label>Día Libre</label>
-                                <select id="per-libre">
-                                    <option value="Lunes">Lunes</option><option value="Martes">Martes</option>
-                                    <option value="Miércoles">Miércoles</option><option value="Jueves">Jueves</option>
-                                    <option value="Viernes">Viernes</option><option value="Sábado">Sábado</option>
-                                    <option value="Domingo">Domingo</option>
+                            <div class="full-width"><label>Nombre Completo</label><input type="text" id="p-nombre"></div>
+                            <div><label>Fecha de Nacimiento</label><input type="date" id="p-fecha"></div>
+                            <div><label>WhatsApp</label><input type="text" id="p-tel"></div>
+                            <div><label>País / Nacionalidad</label><input type="text" id="p-pais"></div>
+                            <div><label>Ciudad / Provincia</label><input type="text" id="p-ciudad"></div>
+                            <div><label>Documento</label><input type="text" id="p-doc"></div>
+                            <div><label>Estado Civil</label>
+                                <select id="p-civil">
+                                    <option value="SOLTERA">SOLTERA</option>
+                                    <option value="SOLTERO">SOLTERO</option>
+                                    <option value="CÓNYUGE">CÓNYUGE</option>
                                 </select>
                             </div>
-                            <div class="full-width"><label>Función que cumple</label><input type="text" id="per-funcion"></div>
-                            <div class="full-width"><label>Historial de Vida / CV</label><textarea id="per-historia" rows="3"></textarea></div>
+                            <div><label>Día Libre</label><input type="text" id="p-libre"></div>
+                            <div><label>Función</label><input type="text" id="p-fun"></div>
                         </div>
-                        <button id="btn-per" class="btn-principal" onclick="crudPersonal()">GUARDAR COLABORADOR</button>
-                        <div id="lista-per" style="margin-top:30px;"></div>
+                        <button class="btn-principal" onclick="guardarColaborador()">REGISTRAR PERSONAL</button>
+                        <div id="lista-personal-cv"></div>
                     </div>`;
                 renderPersonal();
             }
-            // ... (resto de las secciones se mantienen igual que antes)
-            else if(tipo === 'inventario') {
-                titulo.innerText = "INVENTARIO";
-                area.innerHTML = `<div class="bloque-blanco"><input type="text" id="inv-nombre" placeholder="Nombre"><select id="inv-medida"><option value="kg">kg</option><option value="L">L</option><option value="unid">unid</option></select><input type="text" id="inv-precio" placeholder="Precio" oninput="formatearGs(this)"><button onclick="crudInventario()" class="btn-principal">Guardar</button><table id="lista-inv"></table></div>`;
-                renderInventario();
-            }
-            else if(tipo === 'gastos') {
-                titulo.innerText = "GASTOS";
-                area.innerHTML = `<div class="bloque-blanco"><input type="text" id="gas-desc" placeholder="Gasto"><input type="text" id="gas-monto" placeholder="Monto" oninput="formatearGs(this)"><button onclick="crudGasto()" class="btn-principal">Guardar</button><table id="lista-gas"></table></div>`;
-                renderGastos();
-            }
-            else if(tipo === 'menu') {
-                titulo.innerText = "MENÚ";
-                area.innerHTML = `<div class="bloque-blanco"><input type="text" id="menu-nombre" placeholder="Nombre Plato"><button onclick="crudMenu()" class="btn-principal">Crear</button><div id="lista-menu"></div></div>`;
-                renderMenu();
+        }
+
+        function cargarFoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    fotoCargada = e.target.result;
+                    document.getElementById('preview-perfil').innerHTML = `<img src="${fotoCargada}">`;
+                };
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        function crudPersonal() {
+        function calcularEdad(fecha) {
+            const hoy = new Date();
+            const cumple = new Date(fecha);
+            let edad = hoy.getFullYear() - cumple.getFullYear();
+            const m = hoy.getMonth() - cumple.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < cumple.getDate())) edad--;
+            return edad;
+        }
+
+        function guardarColaborador() {
             const data = {
-                nombre: document.getElementById('per-nombre').value,
-                fecha: document.getElementById('per-fecha').value,
-                pais: document.getElementById('per-pais').value,
-                ciudad: document.getElementById('per-ciudad').value,
-                tel: document.getElementById('per-tel').value,
-                doc: document.getElementById('per-doc').value,
-                civil: document.getElementById('per-civil').value,
-                libre: document.getElementById('per-libre').value,
-                funcion: document.getElementById('per-funcion').value,
-                historia: document.getElementById('per-historia').value
+                nombre: document.getElementById('p-nombre').value,
+                fecha: document.getElementById('p-fecha').value,
+                tel: document.getElementById('p-tel').value,
+                pais: document.getElementById('p-pais').value,
+                ciudad: document.getElementById('p-ciudad').value,
+                doc: document.getElementById('p-doc').value,
+                civil: document.getElementById('p-civil').value,
+                libre: document.getElementById('p-libre').value,
+                funcion: document.getElementById('p-fun').value,
+                foto: fotoCargada
             };
-            const ref = db.ref(`negocios/${sectorActivo}/personal`);
-            if(idEdicion) ref.child(idEdicion).update(data);
-            else ref.push(data);
+            db.ref(`negocios/${sectorActivo}/personal`).push(data);
+            fotoCargada = "";
             abrirSeccion('personal');
         }
 
         function renderPersonal() {
             db.ref(`negocios/${sectorActivo}/personal`).on('value', snap => {
-                const div = document.getElementById('lista-per'); if(!div) return;
-                div.innerHTML = "";
-                snap.forEach(child => {
-                    const p = child.val();
-                    div.innerHTML += `
-                        <div class="ficha-empleado">
-                            <div class="accion-flotante">
-                                <button class="btn-edit" onclick="prepararEdicionPer('${child.key}')">✎</button>
-                                <button class="btn-delete" onclick="borrar('personal','${child.key}')">✕</button>
+                const list = document.getElementById('lista-personal-cv'); if(!list) return;
+                list.innerHTML = "";
+                snap.forEach(c => {
+                    const v = c.val();
+                    const edad = v.fecha ? calcularEdad(v.fecha) : "??";
+                    list.innerHTML += `
+                        <div class="ficha-cv">
+                            <img src="${v.foto || 'https://via.placeholder.com/100'}" class="foto-cv">
+                            <div class="datos-cv">
+                                <h4>${v.nombre}</h4>
+                                <div class="grid-info">
+                                    <div><strong>Edad:</strong> ${edad} años</div>
+                                    <div><strong>WhatsApp:</strong> ${v.tel}</div>
+                                    <div><strong>CI:</strong> ${v.doc}</div>
+                                    <div><strong>Estado Civil:</strong> ${v.civil}</div>
+                                    <div><strong>Nacionalidad:</strong> ${v.pais}</div>
+                                    <div><strong>Ciudad:</strong> ${v.ciudad}</div>
+                                    <div><strong>Día Libre:</strong> ${v.libre}</div>
+                                    <div><strong>Función:</strong> ${v.funcion}</div>
+                                </div>
                             </div>
-                            <h3 style="margin:0; color:var(--cafe-suave); font-family:'Cinzel';">${p.nombre}</h3>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; font-size:0.85rem; margin-top:10px;">
-                                <span><strong>CI:</strong> ${p.doc}</span>
-                                <span><strong>TEL:</strong> ${p.tel}</span>
-                                <span><strong>FUNCIÓN:</strong> ${p.funcion}</span>
-                                <span><strong>DÍA LIBRE:</strong> ${p.libre}</span>
-                                <span><strong>NACIDO:</strong> ${p.fecha}</span>
-                                <span><strong>NACIONALIDAD:</strong> ${p.pais}</span>
-                                <span class="full-width"><strong>CIUDAD:</strong> ${p.ciudad}</span>
-                                <span class="full-width"><strong>ESTADO CIVIL:</strong> ${p.civil}</span>
-                            </div>
-                            <div style="margin-top:10px; padding-top:10px; border-top:1px solid #f5f5f5; font-size:0.8rem;">
-                                <strong>HISTORIAL:</strong><br>${p.historia}
-                            </div>
+                            <button class="btn-borrar" onclick="eliminar('${c.key}')">✕</button>
                         </div>`;
                 });
             });
         }
 
-        function prepararEdicionPer(id) {
-            idEdicion = id;
-            db.ref(`negocios/${sectorActivo}/personal/${id}`).once('value', snap => {
-                const p = snap.val();
-                document.getElementById('per-nombre').value = p.nombre;
-                document.getElementById('per-fecha').value = p.fecha;
-                document.getElementById('per-pais').value = p.pais;
-                document.getElementById('per-ciudad').value = p.ciudad;
-                document.getElementById('per-tel').value = p.tel;
-                document.getElementById('per-doc').value = p.doc;
-                document.getElementById('per-civil').value = p.civil;
-                document.getElementById('per-libre').value = p.libre;
-                document.getElementById('per-funcion').value = p.funcion;
-                document.getElementById('per-historia').value = p.historia;
-                document.getElementById('btn-per').innerText = "ACTUALIZAR REGISTRO";
-            });
-        }
-
-        // --- LAS FUNCIONES DE APOYO SE MANTIENEN ---
-        function formatearGs(input) { let num = input.value.replace(/\D/g, ""); input.value = num ? Number(num).toLocaleString('es-PY') : ""; }
-        function borrar(path, id) { if(confirm("¿Borrar registro?")) db.ref(`negocios/${sectorActivo}/${path}/${id}`).remove(); }
-        // (Funciones de Inventario/Gasto/Menu omitidas aquí para brevedad pero deben estar en tu código completo)
-        function crudInventario() { const n = document.getElementById('inv-nombre').value; const m = document.getElementById('inv-medida').value; const p = Number(document.getElementById('inv-precio').value.replace(/\./g, "")); db.ref(`negocios/${sectorActivo}/inventario`).push({nombre:n, medida:m, precio:p}); abrirSeccion('inventario'); }
-        function renderInventario() { db.ref(`negocios/${sectorActivo}/inventario`).on('value', snap => { const t = document.getElementById('lista-inv'); t.innerHTML=""; snap.forEach(c=>{ const v=c.val(); t.innerHTML+=`<tr><td>${v.nombre}</td><td>${v.precio}Gs</td></tr>`; })}); }
+        function eliminar(id) { if(confirm("¿Eliminar registro?")) db.ref(`negocios/${sectorActivo}/personal/${id}`).remove(); }
     </script>
 </body>
 </html>
