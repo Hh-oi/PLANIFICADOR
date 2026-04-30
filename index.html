@@ -22,7 +22,7 @@
         .bloque-blanco { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left; max-width: 850px; margin: 0 auto; }
         
         /* Personal Formulario */
-        #contenedor-formulario { display: none; margin-bottom: 30px; border-bottom: 2px solid var(--rosa-pastel); padding-bottom: 30px; }
+        #contenedor-formulario { display: none; margin-bottom: 30px; padding-bottom: 30px; }
         .foto-registro { text-align: center; margin-bottom: 20px; }
         .circulo-perfil { width: 100px; height: 100px; border-radius: 50%; border: 1px solid var(--dorado-tenue); margin: 0 auto 10px; overflow: hidden; background: #fafafa; display: flex; align-items: center; justify-content: center; }
         .circulo-perfil img { width: 100%; height: 100%; object-fit: cover; }
@@ -43,7 +43,7 @@
         .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8rem; }
         .btn-borrar { position: absolute; top: 10px; right: 10px; color: #fcc; cursor: pointer; background: none; border: none; font-size: 1.1rem; }
 
-        /* Tablas Genéricas */
+        /* Tablas */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
         th { background: var(--rosa-pastel); color: var(--cafe-suave); padding: 10px; text-align: left; font-family: 'Cinzel'; font-size: 0.7rem; }
         td { padding: 10px; border-bottom: 1px solid #eee; }
@@ -120,11 +120,13 @@
                 area.innerHTML = `
                     <div class="bloque-blanco">
                         <div style="text-align: right;"><button class="btn-agregar" id="btn-toggle-form" onclick="mostrarFormulario()">+ AGREGAR PERSONAL</button></div>
+                        
                         <div id="contenedor-formulario">
+                            <h3 style="font-family:'Cinzel'; font-size:0.8rem; text-align:center; color:var(--cafe-suave);">NUEVO REGISTRO</h3>
                             <div class="foto-registro">
                                 <div class="circulo-perfil" id="preview-perfil">👤</div>
                                 <input type="file" id="input-foto" style="display:none" onchange="cargarFoto(this)">
-                                <button onclick="document.getElementById('input-foto').click()" style="font-size:0.6rem; cursor:pointer;">CAMBIAR FOTO</button>
+                                <button onclick="document.getElementById('input-foto').click()" style="font-size:0.6rem; cursor:pointer; background:none; border:1px solid #ddd; padding:2px 5px;">CAMBIAR FOTO</button>
                             </div>
                             <div class="form-grid">
                                 <div class="full-width"><label>Nombre</label><input type="text" id="p-nombre"></div>
@@ -142,27 +144,38 @@
                             <button class="btn-principal" onclick="guardarColaborador()">GUARDAR</button>
                             <button class="btn-principal" style="background:#f5f5f5; color:#999;" onclick="ocultarFormulario()">CANCELAR</button>
                         </div>
+
                         <div id="lista-personal-cv"></div>
                     </div>`;
                 renderPersonal();
             } else {
-                // RESTAURACIÓN DE INVENTARIO, MENÚ Y GASTOS
                 area.innerHTML = `
                     <div class="bloque-blanco">
                         <div class="form-grid">
                             <input type="text" id="item-n" placeholder="Nombre/Concepto">
                             <input type="number" id="item-v" placeholder="Valor/Cantidad">
                         </div>
-                        <button class="btn-principal" onclick="guardarGenerico('${tipo}')">AÑADIR A ${tipo.toUpperCase()}</button>
+                        <button class="btn-principal" onclick="guardarGenerico('${tipo}')">AÑADIR</button>
                         <table id="tabla-datos"><thead><tr><th>Concepto</th><th>Valor</th><th></th></tr></thead><tbody id="cuerpo-tabla"></tbody></table>
                     </div>`;
                 renderGenerico(tipo);
             }
         }
 
-        // FUNCIONES PERSONAL
-        function mostrarFormulario() { document.getElementById('contenedor-formulario').style.display = 'block'; document.getElementById('btn-toggle-form').style.display = 'none'; }
-        function ocultarFormulario() { document.getElementById('contenedor-formulario').style.display = 'none'; document.getElementById('btn-toggle-form').style.display = 'inline-block'; }
+        // FUNCIONES PERSONAL CON OCULTAMIENTO DE LISTA
+        function mostrarFormulario() { 
+            document.getElementById('contenedor-formulario').style.display = 'block'; 
+            document.getElementById('btn-toggle-form').style.display = 'none'; 
+            document.getElementById('lista-personal-cv').style.display = 'none'; // OCULTAR LISTA
+        }
+
+        function ocultarFormulario() { 
+            document.getElementById('contenedor-formulario').style.display = 'none'; 
+            document.getElementById('btn-toggle-form').style.display = 'inline-block'; 
+            document.getElementById('lista-personal-cv').style.display = 'block'; // MOSTRAR LISTA
+            document.getElementById('preview-perfil').innerHTML = "👤";
+            fotoCargada = "";
+        }
         
         function cargarFoto(input) {
             if (input.files && input.files[0]) {
@@ -186,7 +199,6 @@
                 foto: fotoCargada
             };
             db.ref(`negocios/${sectorActivo}/personal`).push(data).then(() => {
-                fotoCargada = "";
                 ocultarFormulario();
             });
         }
@@ -215,7 +227,6 @@
             });
         }
 
-        // FUNCIONES GENÉRICAS (INVENTARIO, MENÚ, GASTOS)
         function guardarGenerico(tipo) {
             const n = document.getElementById('item-n').value;
             const v = document.getElementById('item-v').value;
