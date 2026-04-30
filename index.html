@@ -12,27 +12,21 @@
     <style>
         :root { --rosa-pastel: #FFF5F5; --cafe-suave: #A67B7B; --dorado-tenue: #D4A5A5; --texto: #5A4444; }
         body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--rosa-pastel); color: var(--texto); }
-        
         #pantalla-bienvenida { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: white; }
         #panel-inicio, #vista-sub-menu, #seccion-contenido { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; text-align: center; }
-
         .grid-botones { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
         .card { background: white; padding: 40px 20px; border: 1px solid #eee; cursor: pointer; transition: 0.3s; border-radius: 8px; position: relative; }
         .card:hover { border-color: var(--dorado-tenue); transform: translateY(-3px); }
         .card h3 { font-family: 'Cinzel', serif; letter-spacing: 2px; color: var(--cafe-suave); font-size: 0.9rem; margin: 0; }
-
         .bloque-blanco { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left; max-width: 850px; margin: 0 auto; }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #eee; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
-        
         button { padding: 10px 15px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s; }
         .btn-principal { background: var(--cafe-suave); color: white; width: 100%; margin-top: 10px; }
         .btn-edit { background: #eef2ff; color: #4f46e5; margin-right: 5px; font-size: 0.7rem; }
         .btn-delete { background: #fef2f2; color: #dc2626; font-size: 0.7rem; }
-        
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { text-align: left; padding: 12px; border-bottom: 2px solid var(--rosa-pastel); font-size: 0.8rem; color: var(--cafe-suave); }
         td { padding: 12px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
-
         .accion-flotante { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
     </style>
 </head>
@@ -154,15 +148,14 @@
                 titulo.innerText = "MENÚ Y RECETARIO";
                 area.innerHTML = `
                     <div class="bloque-blanco">
-                        <input type="text" id="menu-nombre" placeholder="Nombre del plato (ej: Hamburguesa Especial)">
-                        <button id="btn-menu" class="btn-principal" onclick="crudMenu()">CREAR PLATO EN MENÚ</button>
+                        <input type="text" id="menu-nombre" placeholder="Nombre del plato">
+                        <button id="btn-menu" class="btn-principal" onclick="crudMenu()">CREAR PLATO</button>
                         <div id="lista-menu" style="margin-top:20px;"></div>
                     </div>`;
                 renderMenu();
             }
         }
 
-        // --- LÓGICA CRUD ---
         function crudInventario() {
             const nombre = document.getElementById('inv-nombre').value;
             const medida = document.getElementById('inv-medida').value;
@@ -285,7 +278,7 @@
                                         <option value="">Ingrediente...</option>
                                         ${Object.keys(inventarioLocal).map(k=>`<option value="${k}">${inventarioLocal[k].nombre}</option>`).join('')}
                                     </select>
-                                    <input type="number" id="cant-${child.key}" placeholder="Cantidad (g/ml/u)" style="flex:1;">
+                                    <input type="number" id="cant-${child.key}" placeholder="Cantidad" style="flex:1;">
                                     <button onclick="addIngredienteCosto('${child.key}')" style="background:var(--cafe-suave); color:white; padding:5px 10px;">+</button>
                                 </div>
                                 <div id="items-${child.key}"></div>
@@ -319,18 +312,14 @@
                 let totalPlato = 0;
                 const cont = document.getElementById('items-' + comidaId); if(!cont) return;
                 cont.innerHTML = "";
-                
                 snap.forEach(c => {
                     const rec = c.val();
                     const ing = inventarioLocal[rec.invId];
                     if(ing) {
-                        // Lógica: Si es kg o L divide por 1000. Si es unid divide por 1.
                         const divisor = (ing.medida === 'unid') ? 1 : 1000;
                         const subCosto = (ing.precio / divisor) * rec.cantidadUsada;
                         totalPlato += subCosto;
-                        
                         const unidadTexto = (ing.medida === 'kg') ? 'g' : (ing.medida === 'L' ? 'ml' : 'u');
-                        
                         cont.innerHTML += `<div style="font-size:0.8rem; display:flex; justify-content:space-between; margin:5px 0; border-bottom:1px dashed #eee;">
                         <span>• ${ing.nombre} (${rec.cantidadUsada}${unidadTexto})</span>
                         <span>${Math.round(subCosto).toLocaleString('es-PY')} Gs 
