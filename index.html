@@ -34,7 +34,6 @@
         td { padding: 12px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
 
         .accion-flotante { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
-        .badge-costo { background: var(--rosa-pastel); color: var(--cafe-suave); padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -114,10 +113,15 @@
                 titulo.innerText = "GESTIÓN DE INVENTARIO";
                 area.innerHTML = `
                     <div class="bloque-blanco">
-                        <input type="text" id="inv-nombre" placeholder="Nombre (ej: Cebolla o Pan unid)">
-                        <input type="text" id="inv-precio" placeholder="Precio Costo (Gs por Kilo o Unid)" oninput="formatearGs(this)">
+                        <input type="text" id="inv-nombre" placeholder="Nombre del producto">
+                        <select id="inv-medida">
+                            <option value="kg">Kilos (Costo por 1000g)</option>
+                            <option value="L">Litros (Costo por 1000ml)</option>
+                            <option value="unid">Unidades (Costo por 1u)</option>
+                        </select>
+                        <input type="text" id="inv-precio" placeholder="Precio de Costo (Gs)" oninput="formatearGs(this)">
                         <button id="btn-inv" class="btn-principal" onclick="crudInventario()">GUARDAR PRODUCTO</button>
-                        <table><thead><tr><th>Nombre</th><th>Costo</th><th>Acciones</th></tr></thead>
+                        <table><thead><tr><th>Nombre</th><th>Medida</th><th>Costo</th><th>Acciones</th></tr></thead>
                         <tbody id="lista-inv"></tbody></table>
                     </div>`;
                 renderInventario();
@@ -135,7 +139,7 @@
                 renderGastos();
             }
             else if(tipo === 'personal') {
-                titulo.innerText = "EQUIPO DE TRABAJO";
+                titulo.innerText = "ADMINISTRACIÓN DE PERSONAL";
                 area.innerHTML = `
                     <div class="bloque-blanco">
                         <input type="text" id="per-nombre" placeholder="Nombre Completo">
@@ -150,21 +154,22 @@
                 titulo.innerText = "MENÚ Y RECETARIO";
                 area.innerHTML = `
                     <div class="bloque-blanco">
-                        <input type="text" id="menu-nombre" placeholder="Ej: Hamburguesa Simple">
-                        <button id="btn-menu" class="btn-principal" onclick="crudMenu()">CREAR PLATO</button>
+                        <input type="text" id="menu-nombre" placeholder="Nombre del plato (ej: Hamburguesa Especial)">
+                        <button id="btn-menu" class="btn-principal" onclick="crudMenu()">CREAR PLATO EN MENÚ</button>
                         <div id="lista-menu" style="margin-top:20px;"></div>
                     </div>`;
                 renderMenu();
             }
         }
 
-        // --- FUNCIONES CRUD ---
+        // --- LÓGICA CRUD ---
         function crudInventario() {
             const nombre = document.getElementById('inv-nombre').value;
+            const medida = document.getElementById('inv-medida').value;
             const precio = Number(document.getElementById('inv-precio').value.replace(/\./g, ""));
             const ref = db.ref(`negocios/${sectorActivo}/inventario`);
-            if(idEdicion) ref.child(idEdicion).update({ nombre, precio });
-            else ref.push({ nombre, precio });
+            if(idEdicion) ref.child(idEdicion).update({ nombre, medida, precio });
+            else ref.push({ nombre, medida, precio });
             abrirSeccion('inventario');
         }
 
@@ -174,16 +179,17 @@
                 tbody.innerHTML = "";
                 snap.forEach(child => {
                     const p = child.val();
-                    tbody.innerHTML += `<tr><td>${p.nombre}</td><td>${p.precio.toLocaleString('es-PY')} Gs</td>
-                    <td><button class="btn-edit" onclick="prepararEdicionInv('${child.key}','${p.nombre}','${p.precio}')">✎</button>
+                    tbody.innerHTML += `<tr><td>${p.nombre}</td><td>${p.medida}</td><td>${p.precio.toLocaleString('es-PY')} Gs</td>
+                    <td><button class="btn-edit" onclick="prepararEdicionInv('${child.key}','${p.nombre}','${p.medida}','${p.precio}')">✎</button>
                     <button class="btn-delete" onclick="borrar('inventario','${child.key}')">✕</button></td></tr>`;
                 });
             });
         }
 
-        function prepararEdicionInv(id, n, p) {
+        function prepararEdicionInv(id, n, m, p) {
             idEdicion = id;
             document.getElementById('inv-nombre').value = n;
+            document.getElementById('inv-medida').value = m;
             document.getElementById('inv-precio').value = Number(p).toLocaleString('es-PY');
             document.getElementById('btn-inv').innerText = "ACTUALIZAR PRODUCTO";
         }
@@ -279,12 +285,12 @@
                                         <option value="">Ingrediente...</option>
                                         ${Object.keys(inventarioLocal).map(k=>`<option value="${k}">${inventarioLocal[k].nombre}</option>`).join('')}
                                     </select>
-                                    <input type="number" id="cant-${child.key}" placeholder="Cant" style="flex:1;">
-                                    <button onclick="addIngredienteConProporcion('${child.key}')" style="background:var(--cafe-suave); color:white; padding:5px 10px;">+</button>
+                                    <input type="number" id="cant-${child.key}" placeholder="Cantidad (g/ml/u)" style="flex:1;">
+                                    <button onclick="addIngredienteCosto('${child.key}')" style="background:var(--cafe-suave); color:white; padding:5px 10px;">+</button>
                                 </div>
                                 <div id="items-${child.key}"></div>
                                 <div style="text-align:right; margin-top:10px; font-weight:bold; color:var(--cafe-suave);">
-                                    COSTO PLATO: <span id="total-costo-${child.key}">0</span> Gs.
+                                    COSTO TOTAL: <span id="total-costo-${child.key}">0</span> Gs.
                                 </div>
                             </div>
                         </div>`;
@@ -299,7 +305,7 @@
             document.getElementById('btn-menu').innerText = "ACTUALIZAR NOMBRE";
         }
 
-        function addIngredienteConProporcion(comidaId) {
+        function addIngredienteCosto(comidaId) {
             const invId = document.getElementById('sel-' + comidaId).value;
             const cantidad = Number(document.getElementById('cant-' + comidaId).value);
             if(invId && cantidad > 0) {
@@ -310,21 +316,30 @@
 
         function calcCostoProporcional(comidaId) {
             db.ref(`negocios/${sectorActivo}/menu/${comidaId}/ingredientes`).on('value', snap => {
-                let total = 0; const cont = document.getElementById('items-' + comidaId); if(!cont) return;
+                let totalPlato = 0;
+                const cont = document.getElementById('items-' + comidaId); if(!cont) return;
                 cont.innerHTML = "";
+                
                 snap.forEach(c => {
-                    const rec = c.val(); const ing = inventarioLocal[rec.invId];
+                    const rec = c.val();
+                    const ing = inventarioLocal[rec.invId];
                     if(ing) {
-                        const esUnidad = ing.nombre.toLowerCase().includes("unid") || ing.nombre.toLowerCase().includes("huevo");
-                        const sub = (ing.precio / (esUnidad ? 1 : 1000)) * rec.cantidadUsada;
-                        total += sub;
-                        cont.innerHTML += `<div style="font-size:0.8rem; display:flex; justify-content:space-between; margin:5px 0;">
-                        <span>• ${ing.nombre} (${rec.cantidadUsada}${esUnidad?'u':'g'})</span>
-                        <span>${Math.round(sub).toLocaleString('es-PY')} Gs <button onclick="borrarIng('${comidaId}','${c.key}')" style="color:red; background:none; border:none; cursor:pointer;">✕</button></span></div>`;
+                        // Lógica: Si es kg o L divide por 1000. Si es unid divide por 1.
+                        const divisor = (ing.medida === 'unid') ? 1 : 1000;
+                        const subCosto = (ing.precio / divisor) * rec.cantidadUsada;
+                        totalPlato += subCosto;
+                        
+                        const unidadTexto = (ing.medida === 'kg') ? 'g' : (ing.medida === 'L' ? 'ml' : 'u');
+                        
+                        cont.innerHTML += `<div style="font-size:0.8rem; display:flex; justify-content:space-between; margin:5px 0; border-bottom:1px dashed #eee;">
+                        <span>• ${ing.nombre} (${rec.cantidadUsada}${unidadTexto})</span>
+                        <span>${Math.round(subCosto).toLocaleString('es-PY')} Gs 
+                            <button onclick="borrarIng('${comidaId}','${c.key}')" style="color:red; background:none; cursor:pointer;">✕</button>
+                        </span></div>`;
                     }
                 });
                 const elTotal = document.getElementById('total-costo-' + comidaId);
-                if(elTotal) elTotal.innerText = Math.round(total).toLocaleString('es-PY');
+                if(elTotal) elTotal.innerText = Math.round(totalPlato).toLocaleString('es-PY');
             });
         }
 
