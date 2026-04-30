@@ -21,7 +21,9 @@
 
         .bloque-blanco { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left; max-width: 850px; margin: 0 auto; }
         
-        /* Contenedor de Foto */
+        /* Formulario Oculto Inicialmente */
+        #contenedor-formulario { display: none; margin-bottom: 30px; border-bottom: 2px solid var(--rosa-pastel); padding-bottom: 30px; }
+        
         .foto-registro { text-align: center; margin-bottom: 20px; }
         .circulo-perfil { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--dorado-tenue); margin: 0 auto 10px; overflow: hidden; background: #fafafa; display: flex; align-items: center; justify-content: center; }
         .circulo-perfil img { width: 100%; height: 100%; object-fit: cover; }
@@ -32,6 +34,8 @@
         input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #eee; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
         
         .btn-principal { background: var(--cafe-suave); color: white; width: 100%; padding: 12px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .btn-agregar { background: white; color: var(--cafe-suave); border: 1px solid var(--cafe-suave); padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 20px; transition: 0.3s; }
+        .btn-agregar:hover { background: var(--cafe-suave); color: white; }
 
         /* Ficha Estilo CV */
         .ficha-cv { background: white; border-radius: 10px; padding: 20px; margin-top: 20px; display: flex; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: relative; align-items: flex-start; }
@@ -39,7 +43,6 @@
         .datos-cv { flex: 1; text-align: left; }
         .datos-cv h4 { margin: 0 0 10px; font-family: 'Cinzel'; color: var(--cafe-suave); font-size: 1.1rem; border-bottom: 1px solid #f5f5f5; padding-bottom: 5px; }
         .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; }
-        .grid-info div { border-bottom: 1px solid #fafafa; padding: 2px 0; }
         .btn-borrar { position: absolute; top: 15px; right: 15px; color: #ffbcbc; cursor: pointer; background: none; border: none; font-size: 1.2rem; }
     </style>
 </head>
@@ -111,33 +114,57 @@
             if(tipo === 'personal') {
                 area.innerHTML = `
                     <div class="bloque-blanco">
-                        <div class="foto-registro">
-                            <div class="circulo-perfil" id="preview-perfil">👤</div>
-                            <input type="file" id="input-foto" style="display:none" onchange="cargarFoto(this)">
-                            <button onclick="document.getElementById('input-foto').click()" style="font-size:0.6rem; background:none; border:1px solid #ddd; padding:5px; cursor:pointer;">SUBIR FOTO</button>
+                        <div style="text-align: right;">
+                            <button class="btn-agregar" id="btn-toggle-form" onclick="mostrarFormulario()">+ AGREGAR NUEVO</button>
                         </div>
-                        <div class="form-grid">
-                            <div class="full-width"><label>Nombre Completo</label><input type="text" id="p-nombre"></div>
-                            <div><label>Fecha de Nacimiento</label><input type="date" id="p-fecha"></div>
-                            <div><label>WhatsApp</label><input type="text" id="p-tel"></div>
-                            <div><label>País / Nacionalidad</label><input type="text" id="p-pais"></div>
-                            <div><label>Ciudad / Provincia</label><input type="text" id="p-ciudad"></div>
-                            <div><label>Documento</label><input type="text" id="p-doc"></div>
-                            <div><label>Estado Civil</label>
-                                <select id="p-civil">
-                                    <option value="SOLTERA">SOLTERA</option>
-                                    <option value="SOLTERO">SOLTERO</option>
-                                    <option value="CÓNYUGE">CÓNYUGE</option>
-                                </select>
+
+                        <div id="contenedor-formulario">
+                            <h3 style="font-family:'Cinzel'; font-size:1rem; color:var(--cafe-suave); margin-bottom:20px;">Nuevo Registro</h3>
+                            <div class="foto-registro">
+                                <div class="circulo-perfil" id="preview-perfil">👤</div>
+                                <input type="file" id="input-foto" style="display:none" onchange="cargarFoto(this)">
+                                <button onclick="document.getElementById('input-foto').click()" style="font-size:0.6rem; background:none; border:1px solid #ddd; padding:5px; cursor:pointer;">CAMBIAR FOTO</button>
                             </div>
-                            <div><label>Día Libre</label><input type="text" id="p-libre"></div>
-                            <div><label>Función</label><input type="text" id="p-fun"></div>
+                            <div class="form-grid">
+                                <div class="full-width"><label>Nombre Completo</label><input type="text" id="p-nombre"></div>
+                                <div><label>Fecha de Nacimiento</label><input type="date" id="p-fecha"></div>
+                                <div><label>WhatsApp</label><input type="text" id="p-tel"></div>
+                                <div><label>País / Nacionalidad</label><input type="text" id="p-pais"></div>
+                                <div><label>Ciudad / Provincia</label><input type="text" id="p-ciudad"></div>
+                                <div><label>Documento</label><input type="text" id="p-doc"></div>
+                                <div><label>Estado Civil</label>
+                                    <select id="p-civil">
+                                        <option value="SOLTERA">SOLTERA</option>
+                                        <option value="SOLTERO">SOLTERO</option>
+                                        <option value="CÓNYUGE">CÓNYUGE</option>
+                                    </select>
+                                </div>
+                                <div><label>Día Libre</label><input type="text" id="p-libre"></div>
+                                <div><label>Función</label><input type="text" id="p-fun"></div>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn-principal" onclick="guardarColaborador()">GUARDAR REGISTRO</button>
+                                <button class="btn-principal" style="background:#eee; color:#666;" onclick="ocultarFormulario()">CANCELAR</button>
+                            </div>
                         </div>
-                        <button class="btn-principal" onclick="guardarColaborador()">REGISTRAR PERSONAL</button>
-                        <div id="lista-personal-cv"></div>
+
+                        <div id="lista-personal-cv">
+                            <!-- Aquí se cargan los CVs -->
+                        </div>
                     </div>`;
                 renderPersonal();
             }
+        }
+
+        function mostrarFormulario() {
+            document.getElementById('contenedor-formulario').style.display = 'block';
+            document.getElementById('btn-toggle-form').style.display = 'none';
+        }
+
+        function ocultarFormulario() {
+            document.getElementById('contenedor-formulario').style.display = 'none';
+            document.getElementById('btn-toggle-form').style.display = 'inline-block';
+            fotoCargada = "";
         }
 
         function cargarFoto(input) {
@@ -174,8 +201,7 @@
                 foto: fotoCargada
             };
             db.ref(`negocios/${sectorActivo}/personal`).push(data);
-            fotoCargada = "";
-            abrirSeccion('personal');
+            ocultarFormulario();
         }
 
         function renderPersonal() {
