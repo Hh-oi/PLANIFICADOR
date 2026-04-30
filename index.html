@@ -5,60 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador - Leidyd</title>
     
-    <!-- Librerías de Firebase y Fuentes Elegantes -->
     <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --rosa-pastel: #FFF5F5;
-            --cafe-suave: #A67B7B;
-            --dorado-tenue: #D4A5A5;
-            --texto: #5A4444;
-        }
-
-        body, html { height: 100%; margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--rosa-pastel); color: var(--texto); }
-
-        /* --- PANTALLA DE BIENVENIDA --- */
-        #pantalla-bienvenida { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center; background: white; }
-        .logo-principal { font-family: 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 8px; margin-bottom: 10px; color: var(--dorado-tenue); }
+        :root { --rosa-pastel: #FFF5F5; --cafe-suave: #A67B7B; --dorado-tenue: #D4A5A5; --texto: #5A4444; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: var(--rosa-pastel); color: var(--texto); }
+        
+        #pantalla-bienvenida { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: white; }
         .titulo-bienvenida { font-family: 'Cinzel', serif; font-size: 3.5rem; margin: 0 0 40px 0; color: var(--cafe-suave); }
-        .btn-ingresar { padding: 15px 50px; font-size: 1rem; letter-spacing: 3px; background: transparent; border: 1px solid var(--dorado-tenue); color: var(--cafe-suave); cursor: pointer; transition: 0.4s; text-transform: uppercase; }
-        .btn-ingresar:hover { background: var(--dorado-tenue); color: white; }
+        .btn-ingresar { padding: 15px 50px; letter-spacing: 3px; background: transparent; border: 1px solid var(--dorado-tenue); color: var(--cafe-suave); cursor: pointer; text-transform: uppercase; }
 
-        /* --- PANEL DE INICIO --- */
         #panel-inicio { display: none; padding: 60px 20px; max-width: 900px; margin: 0 auto; text-align: center; }
         .grid-botones { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
         .card-negocio { background: white; padding: 60px 20px; border: 1px solid #eee; cursor: pointer; transition: 0.3s; }
-        .card-negocio:hover { border-color: var(--dorado-tenue); background-color: #fafafa; }
-        .card-negocio h3 { font-family: 'Cinzel', serif; letter-spacing: 4px; margin: 0; color: var(--cafe-suave); }
+        .card-negocio h3 { font-family: 'Cinzel', serif; letter-spacing: 4px; color: var(--cafe-suave); }
 
-        /* --- VISTA SECTOR --- */
-        #vista-detalle { display: none; max-width: 1000px; margin: 50px auto; padding: 40px; background: white; min-height: 80vh; }
-        .header-detalle { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-volver { background: none; border: none; color: var(--dorado-tenue); cursor: pointer; font-size: 0.8rem; letter-spacing: 2px; }
-
-        .tarjeta-resumen { background: #fdf2f2; padding: 20px; text-align: center; border: 1px solid var(--dorado-tenue); border-radius: 10px; }
-        .seccion-carga { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
-        .bloque-input { background: #fff; border: 1px solid #f2f2f2; padding: 20px; border-radius: 10px; text-align: left; }
+        #vista-detalle { display: none; max-width: 1100px; margin: 40px auto; padding: 30px; background: white; min-height: 90vh; }
+        .header-detalle { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         
-        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #eee; border-radius: 5px; box-sizing: border-box; }
-        .btn-accion { width: 100%; padding: 10px; border: none; cursor: pointer; font-weight: bold; }
+        .seccion-carga { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .bloque-input { background: #fff; border: 1px solid #f2f2f2; padding: 20px; border-radius: 10px; }
+        
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #eee; border-radius: 5px; box-sizing: border-box; }
+        
+        /* Estilos de la Tabla */
+        .contenedor-tabla { margin-top: 20px; max-height: 300px; overflow-y: auto; border: 1px solid #f2f2f2; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { background: var(--rosa-pastel); position: sticky; top: 0; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        .btn-tabla { padding: 5px 10px; cursor: pointer; border: none; border-radius: 3px; font-size: 0.7rem; }
+        .btn-borrar { background: #ffeded; color: #cc5c5c; }
+        .btn-editar { background: #f0f0ff; color: #5c5ccc; margin-right: 5px; }
+
+        .buscador { background: #fff; border: 1px solid var(--dorado-tenue); padding: 10px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- 1. Pantalla de Bienvenida -->
     <div id="pantalla-bienvenida">
-        <div class="logo-principal">LEIDYD</div>
         <h1 class="titulo-bienvenida">PLANIFICADOR</h1>
         <button class="btn-ingresar" onclick="entrar()">Ingresar</button>
     </div>
 
-    <!-- 2. Panel Principal -->
     <div id="panel-inicio">
-        <div class="logo-principal">SECTORES</div>
         <div class="grid-botones">
             <div class="card-negocio" onclick="verSector('EL_MANA')"><h3>EL MANÁ</h3></div>
             <div class="card-negocio" onclick="verSector('MBURUKUJA')"><h3>MBURUKUJÁ</h3></div>
@@ -66,63 +57,46 @@
         </div>
     </div>
 
-    <!-- 3. Vista de Detalle -->
     <div id="vista-detalle">
         <div class="header-detalle">
-            <button class="btn-volver" onclick="volver()">← VOLVER AL INICIO</button>
-            <h2 id="titulo-sector" style="font-family: 'Cinzel'; letter-spacing: 5px; margin:0;"></h2>
-            <div style="width: 100px;"></div>
-        </div>
-        
-        <!-- Resumen de Totales -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-            <div class="tarjeta-resumen">
-                <p style="font-size: 0.7rem; margin: 0;">TOTAL GASTOS</p>
-                <h2 id="total-gastos-sum">0 Gs.</h2>
-            </div>
-            <div class="tarjeta-resumen">
-                <p style="font-size: 0.7rem; margin: 0;">ITEMS EN INVENTARIO</p>
-                <h2 id="total-items-inv">0</h2>
-            </div>
+            <button onclick="volver()" style="background:none; border:none; color:var(--dorado-tenue); cursor:pointer;">← VOLVER</button>
+            <h2 id="titulo-sector" style="font-family:'Cinzel'; letter-spacing:5px; margin:0;"></h2>
+            <div style="width: 80px;"></div>
         </div>
 
         <div class="seccion-carga">
-            <!-- Carga de Inventario -->
+            <!-- Inventario con Buscador y Tabla -->
             <div class="bloque-input">
-                <h3 style="font-family: 'Cinzel'; font-size: 0.9rem;">📦 Cargar Inventario</h3>
-                <input type="text" id="inv-nombre" placeholder="Producto (ej: Pan)">
-                <input type="number" id="inv-precio" placeholder="Precio Costo (Gs)">
-                <button class="btn-accion" style="background: var(--cafe-suave); color: white;" onclick="guardarInventario()">Guardar</button>
-            </div>
-
-            <!-- Carga de Gastos -->
-            <div class="bloque-input">
-                <h3 style="font-family: 'Cinzel'; font-size: 0.9rem;">💸 Cargar Gasto</h3>
-                <input type="text" id="gasto-desc" placeholder="Gasto (ej: ANDE)">
-                <input type="number" id="gasto-monto" placeholder="Monto (Gs)">
-                <button class="btn-accion" style="background: var(--dorado-tenue); color: white;" onclick="guardarGasto()">Registrar</button>
-            </div>
-        </div>
-
-        <!-- Simulador de Costo por Producto -->
-        <div class="bloque-input" style="margin-top: 30px; border-top: 3px solid var(--cafe-suave);">
-            <h3 style="font-family: 'Cinzel';">🍔 Simulador de Hamburguesa</h3>
-            <div id="lista-receta">
-                <div style="display: flex; gap: 10px;">
-                    <select class="sel-prod" onchange="actualizarReceta()"><option value="0">Seleccionar ingrediente...</option></select>
+                <h3 style="font-family:'Cinzel'; font-size:0.9rem;">📦 Gestión de Inventario</h3>
+                <input type="text" id="inv-nombre" placeholder="Nombre del producto">
+                <input type="text" id="inv-precio" placeholder="Precio de Costo (Gs)" oninput="formatearInput(this)">
+                <button id="btn-inv-accion" style="width:100%; padding:10px; background:var(--cafe-suave); color:white; border:none;" onclick="guardarInventario()">Guardar Producto</button>
+                
+                <input type="text" class="buscador" id="busqueda-inv" placeholder="🔍 Buscar producto..." oninput="renderizarInventario()">
+                <div class="contenedor-tabla">
+                    <table id="tabla-inventario">
+                        <thead><tr><th>Producto</th><th>Precio</th><th>Acción</th></tr></thead>
+                        <tbody id="body-inventario"></tbody>
+                    </table>
                 </div>
             </div>
-            <button onclick="nuevaFilaReceta()" style="margin-top: 10px; background: none; border: 1px dashed #ccc; cursor: pointer;">+ Ingrediente</button>
-            
-            <div style="text-align: right; padding: 20px; background: var(--rosa-pastel); margin-top: 20px;">
-                <p style="margin:0; font-size: 0.8rem;">COSTO UNITARIO:</p>
-                <h2 id="total-receta">0 Gs.</h2>
+
+            <!-- Gastos -->
+            <div class="bloque-input">
+                <h3 style="font-family:'Cinzel'; font-size:0.9rem;">💸 Gastos de Sector</h3>
+                <input type="text" id="gasto-desc" placeholder="Descripción del gasto">
+                <input type="text" id="gasto-monto" placeholder="Monto (Gs)" oninput="formatearInput(this)">
+                <button style="width:100%; padding:10px; background:var(--dorado-tenue); color:white; border:none;" onclick="guardarGasto()">Registrar Gasto</button>
+                
+                <div style="margin-top:20px; padding:15px; background:var(--rosa-pastel); text-align:center;">
+                    <p style="font-size:0.7rem; margin:0;">TOTAL GASTOS ACUMULADOS</p>
+                    <h2 id="total-gastos-sum" style="margin:5px 0;">0 Gs.</h2>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDMmt5ZsafqLxGLpRhfrpMdOGk3OUvyl9E",
             authDomain: "planificador-leidyd.firebaseapp.com",
@@ -136,86 +110,95 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let sectorActual = "";
-        let productosLocal = {};
+        let editandoId = null;
+        let listaCompletaInv = {};
 
-        function entrar() { 
-            document.getElementById('pantalla-bienvenida').style.display = 'none'; 
-            document.getElementById('panel-inicio').style.display = 'block'; 
+        function entrar() { document.getElementById('pantalla-bienvenida').style.display='none'; document.getElementById('panel-inicio').style.display='block'; }
+        function volver() { document.getElementById('vista-detalle').style.display='none'; document.getElementById('panel-inicio').style.display='block'; }
+
+        function formatearInput(input) {
+            let value = input.value.replace(/\D/g, "");
+            input.value = value ? Number(value).toLocaleString('es-PY') : "";
         }
 
         function verSector(id) {
             sectorActual = id;
-            document.getElementById('panel-inicio').style.display = 'none';
-            document.getElementById('vista-detalle').style.display = 'block';
+            document.getElementById('panel-inicio').style.display='none';
+            document.getElementById('vista-detalle').style.display='block';
             document.getElementById('titulo-sector').innerText = id.replace('_', ' ');
             escucharDatos();
         }
 
-        function volver() { 
-            document.getElementById('vista-detalle').style.display = 'none'; 
-            document.getElementById('panel-inicio').style.display = 'block'; 
-        }
-
-        // --- FUNCIONES DE BASE DE DATOS ---
         function guardarInventario() {
             const nombre = document.getElementById('inv-nombre').value;
-            const precio = document.getElementById('inv-precio').value;
+            const precio = Number(document.getElementById('inv-precio').value.replace(/\./g, ""));
+            
             if(nombre && precio) {
-                db.ref(`negocios/${sectorActual}/inventario_lista`).push({ nombre, precio: Number(precio) });
+                if(editandoId) {
+                    db.ref(`negocios/${sectorActual}/inventario_lista/${editandoId}`).update({ nombre, precio });
+                    editandoId = null;
+                    document.getElementById('btn-inv-accion').innerText = "Guardar Producto";
+                } else {
+                    db.ref(`negocios/${sectorActual}/inventario_lista`).push({ nombre, precio });
+                }
                 document.getElementById('inv-nombre').value = ""; document.getElementById('inv-precio').value = "";
             }
         }
 
-        function guardarGasto() {
-            const desc = document.getElementById('gasto-desc').value;
-            const monto = document.getElementById('gasto-monto').value;
-            if(desc && monto) {
-                db.ref(`negocios/${sectorActual}/gastos_lista`).push({ desc, monto: Number(monto) });
-                document.getElementById('gasto-desc').value = ""; document.getElementById('gasto-monto').value = "";
-            }
-        }
-
         function escucharDatos() {
-            // Escuchar Gastos y Sumar
+            db.ref(`negocios/${sectorActual}/inventario_lista`).on('value', (snap) => {
+                listaCompletaInv = snap.val() || {};
+                renderizarInventario();
+            });
+
             db.ref(`negocios/${sectorActual}/gastos_lista`).on('value', (snap) => {
                 let total = 0;
                 snap.forEach(child => { total += child.val().monto; });
                 document.getElementById('total-gastos-sum').innerText = total.toLocaleString('es-PY') + " Gs.";
             });
-
-            // Escuchar Inventario para la Calculadora
-            db.ref(`negocios/${sectorActual}/inventario_lista`).on('value', (snap) => {
-                const selects = document.querySelectorAll('.sel-prod');
-                let options = '<option value="0">Seleccionar ingrediente...</option>';
-                let count = 0;
-                productosLocal = {};
-                
-                snap.forEach(child => {
-                    const p = child.val();
-                    productosLocal[child.key] = p.precio;
-                    options += `<option value="${child.key}">${p.nombre} (${p.precio} Gs)</option>`;
-                    count++;
-                });
-                
-                selects.forEach(s => s.innerHTML = options);
-                document.getElementById('total-items-inv').innerText = count;
-            });
         }
 
-        function nuevaFilaReceta() {
-            const div = document.createElement('div');
-            div.style.display = 'flex';
-            div.style.gap = '10px';
-            div.innerHTML = `<select class="sel-prod" onchange="actualizarReceta()">${document.querySelector('.sel-prod').innerHTML}</select>`;
-            document.getElementById('lista-receta').appendChild(div);
+        function renderizarInventario() {
+            const tbody = document.getElementById('body-inventario');
+            const busqueda = document.getElementById('busqueda-inv').value.toLowerCase();
+            tbody.innerHTML = "";
+            
+            for(let id in listaCompletaInv) {
+                const p = listaCompletaInv[id];
+                if(p.nombre.toLowerCase().includes(busqueda)) {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${p.nombre}</td>
+                            <td>${p.precio.toLocaleString('es-PY')}</td>
+                            <td>
+                                <button class="btn-tabla btn-editar" onclick="prepararEdicion('${id}', '${p.nombre}', ${p.precio})">✎</button>
+                                <button class="btn-tabla btn-borrar" onclick="borrarItem('${id}')">✕</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
         }
 
-        function actualizarReceta() {
-            let total = 0;
-            document.querySelectorAll('.sel-prod').forEach(s => {
-                total += productosLocal[s.value] || 0;
-            });
-            document.getElementById('total-receta').innerText = total.toLocaleString('es-PY') + " Gs.";
+        function prepararEdicion(id, nombre, precio) {
+            editandoId = id;
+            document.getElementById('inv-nombre').value = nombre;
+            document.getElementById('inv-precio').value = precio.toLocaleString('es-PY');
+            document.getElementById('btn-inv-accion').innerText = "Actualizar Producto";
+            document.getElementById('inv-nombre').focus();
+        }
+
+        function borrarItem(id) {
+            if(confirm("¿Eliminar este producto?")) db.ref(`negocios/${sectorActual}/inventario_lista/${id}`).remove();
+        }
+
+        function guardarGasto() {
+            const desc = document.getElementById('gasto-desc').value;
+            const monto = Number(document.getElementById('gasto-monto').value.replace(/\./g, ""));
+            if(desc && monto) {
+                db.ref(`negocios/${sectorActual}/gastos_lista`).push({ desc, monto });
+                document.getElementById('gasto-desc').value = ""; document.getElementById('gasto-monto').value = "";
+            }
         }
     </script>
 </body>
