@@ -1,27 +1,26 @@
-<!-- Contenedor Principal -->
-<div class="menu-inicio">
-  <button onclick="mostrarDetalles('mana')">EL MANÁ</button>
-  <button onclick="mostrarDetalles('mburukuja')">MBURUKUJÁ</button>
-  <button>TRANSPORTE</button>
-  <button>RECORDATORIO</button>
-</div>
+<!-- Esta es la caja que aparecerá al hacer clic -->
+<div id="detalle-negocio" class="caja-oculta" style="display:none; margin-top: 20px; padding: 20px; border: 2px solid #D4A5A5; border-radius: 15px; background-color: #FFF5F5;">
+    <h2 id="titulo-negocio" style="color: #8C5E5E;"></h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="seccion-planificador">
+            <h4 style="color: #A67B7B;">📦 Inventario y Costos</h4>
+            <p>Disponible: <span id="stock-info">Cargando...</span></p>
+            <p>Costos fijos: <span id="costo-info">0 Gs.</span></p>
+        </div>
 
-<!-- Caja de Detalles (Se oculta/muestra con JS) -->
-<div id="caja-mana" style="display:none;">
-  <h2>Gestión: EL MANÁ</h2>
-  
-  <div class="sector">
-    <h3>📦 Inventario</h3>
-    <p>Stock disponible y costos de reposición.</p>
-  </div>
+        <div class="seccion-planificador">
+            <h4 style="color: #A67B7B;">📅 Pagos y Responsabilidades</h4>
+            <p>Falta pagar: <span id="pendientes-info">Nada pendiente</span></p>
+            <p>Fecha de pago: <span id="fecha-info">--/--/--</span></p>
+        </div>
 
-  <div class="sector">
-    <h3>💰 Finanzas</h3>
-    <p>Responsabilidades por pagar y fechas de vencimiento.</p>
-  </div>
-
-  <div class="sector">
-    <h3>👥 Personal</h3>
-    <p>Gastos de salarios y acceso a Currículums.</p>
-  </div>
+        <div class="seccion-planificador">
+            <h4 style="color: #A67B7B;">👥 Personal</h4>
+            <p>Gastos sueldos: <span id="gastos-personal">0 Gs.</span></p>
+            <a href="#" id="link-cv" style="color: #D4A5A5;">Ver Currículums</a>
+        </div>
+    </div>
+    <br>
+    <button onclick="cerrarCaja()" style="background-color: #D4A5A5; color: white; border: none; padding: 5px 15px; border-radius: 5px;">Cerrar</button>
 </div>
