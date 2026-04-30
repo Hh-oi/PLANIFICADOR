@@ -5,94 +5,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador - Leidyd</title>
     
-    <!-- Cargamos las librerías necesarias de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
+    <!-- Fuentes elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 
     <style>
-        body { background-color: #FFF5F5; font-family: 'Segoe UI', sans-serif; color: #8C5E5E; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .portada { text-align: center; padding: 40px; background: white; border-radius: 20px; width: 100%; max-width: 800px; margin-bottom: 30px; border: 1px solid #F2DADA; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .portada h1 { font-size: 3rem; margin: 0; color: #A67B7B; letter-spacing: 5px; text-transform: uppercase; }
-        .grid-inicio { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 700px; }
-        .boton-sector { background-color: #D4A5A5; color: white; border: none; padding: 40px 20px; font-size: 1.2rem; font-weight: bold; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .boton-sector:hover { background-color: #A67B7B; transform: translateY(-2px); }
-        
-        #caja-gestion { display: none; margin-top: 30px; width: 100%; max-width: 800px; background: white; padding: 25px; border-radius: 20px; border: 2px solid #D4A5A5; }
-        .tarjeta-info { background: #FFF9F9; padding: 15px; border-radius: 12px; border-left: 5px solid #D4A5A5; margin-bottom: 10px; }
-        .valor { font-weight: bold; color: #A67B7B; font-size: 1.1rem; }
-        .btn-cerrar { display: block; margin: 20px auto 0; background: #8C5E5E; color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; }
+        :root {
+            --rosa-pastel: #FFF5F5;
+            --cafe-suave: #A67B7B;
+            --dorado-tenue: #D4A5A5;
+            --texto: #5A4444;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--rosa-pastel);
+            color: var(--texto);
+            overflow-x: hidden;
+        }
+
+        /* --- PANTALLA DE BIENVENIDA --- */
+        #pantalla-bienvenida {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background: white;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        .logo-principal {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            color: var(--dorado-tenue);
+        }
+
+        .titulo-bienvenida {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            margin: 0 0 40px 0;
+            color: var(--cafe-suave);
+        }
+
+        .btn-ingresar {
+            padding: 15px 50px;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            background: transparent;
+            border: 1px solid var(--dorado-tenue);
+            color: var(--cafe-suave);
+            cursor: pointer;
+            transition: 0.4s;
+            text-transform: uppercase;
+        }
+
+        .btn-ingresar:hover {
+            background: var(--dorado-tenue);
+            color: white;
+        }
+
+        /* --- PANEL DE INICIO --- */
+        #panel-inicio {
+            display: none;
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .grid-botones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .card-negocio {
+            background: white;
+            padding: 60px 20px;
+            border-radius: 2px; /* Estilo más cuadrado y minimalista */
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+
+        .card-negocio:hover {
+            border-color: var(--dorado-tenue);
+            transform: translateY(-5px);
+        }
+
+        .card-negocio h3 {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 4px;
+            margin: 0;
+            color: var(--cafe-suave);
+        }
+
+        /* --- VISTA SECTOR (EL MANÁ) --- */
+        #vista-detalle {
+            display: none;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            min-height: 80vh;
+        }
+
+        .header-detalle {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-volver {
+            background: none;
+            border: none;
+            color: var(--dorado-tenue);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="portada">
-        <p style="font-style: italic; margin: 0;">Leidyd Villalba</p>
-        <h1>PLANIFICADOR</h1>
+    <!-- 1. Pantalla de Bienvenida -->
+    <div id="pantalla-bienvenida">
+        <div class="logo-principal">LEIDYD</div>
+        <h1 class="titulo-bienvenida">PLANIFICADOR</h1>
+        <button class="btn-ingresar" onclick="entrar()">Ingresar</button>
     </div>
 
-    <div class="grid-inicio">
-        <!-- Los IDs de aquí deben ser iguales a los de Firebase -->
-        <button class="boton-sector" onclick="abrirGestion('EL_MANA')">El Maná</button>
-        <button class="boton-sector" onclick="abrirGestion('MBURUKUJA')">Mburukujá</button>
-        <button class="boton-sector" onclick="abrirGestion('TRANSPORTE')">Transporte</button>
-        <button class="boton-sector" onclick="abrirGestion('RECORDATORIO')">Recordatorio</button>
-    </div>
-
-    <div id="caja-gestion">
-        <h2 id="nombre-negocio" style="text-align: center; color: #A67B7B; text-transform: uppercase;"></h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-            <div class="tarjeta-info">
-                <h3>📦 Inventario</h3>
-                <p>Estado: <span id="disp-info" class="valor">...</span></p>
-                <p>Costo: <span id="costo-inv" class="valor">0</span> Gs.</p>
+    <!-- 2. Panel Principal (Después de Ingresar) -->
+    <div id="panel-inicio">
+        <div class="logo-principal">SELECCIONA UN SECTOR</div>
+        <div class="grid-botones">
+            <div class="card-negocio" onclick="verSector('EL MANÁ')">
+                <h3>EL MANÁ</h3>
             </div>
-            <div class="tarjeta-info">
-                <h3>👥 Personal</h3>
-                <p>Gastos: <span id="gasto-pers" class="valor">0</span> Gs.</p>
+            <div class="card-negocio" onclick="verSector('MBURUKUJÁ')">
+                <h3>MBURUKUJÁ</h3>
+            </div>
+            <div class="card-negocio" onclick="verSector('RECORDATORIOS')">
+                <h3>RECORDATORIOS</h3>
             </div>
         </div>
-        <button class="btn-cerrar" onclick="cerrarGestion()">Cerrar Vista</button>
+    </div>
+
+    <!-- 3. Vista de Detalle (Diseñaremos el interior de El Maná aquí) -->
+    <div id="vista-detalle">
+        <div class="header-detalle">
+            <button class="btn-volver" onclick="volver()">← VOLVER AL INICIO</button>
+            <h2 id="titulo-sector" style="font-family: 'Cinzel'; letter-spacing: 5px; margin:0;"></h2>
+            <div style="width: 100px;"></div> <!-- Espaciador -->
+        </div>
+        
+        <div id="contenido-sector">
+            <!-- Aquí vamos a diseñar lo que me pidas para El Maná -->
+            <p style="text-align: center; color: #ccc; margin-top: 100px;">
+                Diseñando el panel de control...
+            </p>
+        </div>
     </div>
 
     <script>
-        // Aquí es donde pusimos el link que me preguntaste (databaseURL)
-        const firebaseConfig = {
-            apiKey: "AIzaSyDMmt5ZsafqLxGLpRhfrpMdOGk3OUvyl9E",
-            authDomain: "planificador-leidyd.firebaseapp.com",
-            projectId: "planificador-leidyd",
-            storageBucket: "planificador-leidyd.firebasestorage.app",
-            messagingSenderId: "930473531039",
-            appId: "1:930473531039:web:085de97dcd2547987b34aa",
-            databaseURL: "https://planificador-leidyd-default-rtdb.firebaseio.com"
-        };
-
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        function abrirGestion(sectorId) {
-            const panel = document.getElementById('caja-gestion');
-            document.getElementById('nombre-negocio').innerText = sectorId.replace('_', ' ');
-            panel.style.display = 'block';
-
-            // Buscar datos en la ruta que creaste (negocios/Sector)
-            database.ref('negocios/' + sectorId).on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    document.getElementById('disp-info').innerText = data.inventario || "Sin datos";
-                    // .toLocaleString() pone los puntos automáticamente a los números
-                    document.getElementById('costo-inv').innerText = (data.costo_inventario || 0).toLocaleString('es-PY');
-                    document.getElementById('gasto-pers').innerText = (data.gastos_personal || 0).toLocaleString('es-PY');
-                } else {
-                    alert("Aún no hay datos cargados para este sector en Firebase.");
-                }
-            });
-
-            panel.scrollIntoView({ behavior: 'smooth' });
+        function entrar() {
+            document.getElementById('pantalla-bienvenida').style.display = 'none';
+            document.getElementById('panel-inicio').style.display = 'block';
         }
 
-        function cerrarGestion() {
-            document.getElementById('caja-gestion').style.display = 'none';
+        function verSector(nombre) {
+            document.getElementById('panel-inicio').style.display = 'none';
+            document.getElementById('vista-detalle').style.display = 'block';
+            document.getElementById('titulo-sector').innerText = nombre;
+        }
+
+        function volver() {
+            document.getElementById('vista-detalle').style.display = 'none';
+            document.getElementById('panel-inicio').style.display = 'block';
         }
     </script>
 </body>
