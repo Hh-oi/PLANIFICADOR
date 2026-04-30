@@ -1,303 +1,66 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planificador - Leidyd</title>
+<!-- Reemplaza la sección "contenido-sector" en tu index.html con esto -->
+<div id="contenido-sector">
     
-    <!-- Librerías de Firebase y Fuentes Elegantes -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --rosa-pastel: #FFF5F5;
-            --cafe-suave: #A67B7B;
-            --dorado-tenue: #D4A5A5;
-            --texto: #5A4444;
-        }
-
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--rosa-pastel);
-            color: var(--texto);
-            overflow-x: hidden;
-        }
-
-        /* --- PANTALLA DE BIENVENIDA --- */
-        #pantalla-bienvenida {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            background: white;
-            z-index: 100;
-        }
-
-        .logo-principal {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            letter-spacing: 8px;
-            margin-bottom: 10px;
-            color: var(--dorado-tenue);
-        }
-
-        .titulo-bienvenida {
-            font-family: 'Cinzel', serif;
-            font-size: 3.5rem;
-            margin: 0 0 40px 0;
-            color: var(--cafe-suave);
-        }
-
-        .btn-ingresar {
-            padding: 15px 50px;
-            font-size: 1rem;
-            letter-spacing: 3px;
-            background: transparent;
-            border: 1px solid var(--dorado-tenue);
-            color: var(--cafe-suave);
-            cursor: pointer;
-            transition: 0.4s;
-            text-transform: uppercase;
-        }
-
-        .btn-ingresar:hover {
-            background: var(--dorado-tenue);
-            color: white;
-        }
-
-        /* --- PANEL DE INICIO --- */
-        #panel-inicio {
-            display: none;
-            padding: 60px 20px;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .grid-botones {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .card-negocio {
-            background: white;
-            padding: 60px 20px;
-            border: 1px solid #eee;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .card-negocio:hover {
-            border-color: var(--dorado-tenue);
-            background-color: #fafafa;
-        }
-
-        .card-negocio h3 {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 4px;
-            margin: 0;
-            color: var(--cafe-suave);
-        }
-
-        /* --- VISTA SECTOR --- */
-        #vista-detalle {
-            display: none;
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 40px;
-            background: white;
-            min-height: 80vh;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-        }
-
-        .header-detalle {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-volver {
-            background: none;
-            border: none;
-            color: var(--dorado-tenue);
-            cursor: pointer;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-        }
-
-        .tarjeta-resumen {
-            background: #fdf2f2;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .tarjeta-resumen h3 { margin: 5px 0; color: var(--cafe-suave); }
-
-        /* Calculadora */
-        .calculadora-contenedor {
-            background: #fff;
-            border: 1px solid var(--dorado-tenue);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: left;
-            margin-top: 30px;
-        }
-
-        input { padding: 10px; border: 1px solid #eee; border-radius: 5px; outline: none; }
-        input:focus { border-color: var(--dorado-tenue); }
-    </style>
-</head>
-<body>
-
-    <!-- 1. Pantalla de Bienvenida -->
-    <div id="pantalla-bienvenida">
-        <div class="logo-principal">LEIDYD</div>
-        <h1 class="titulo-bienvenida">PLANIFICADOR</h1>
-        <button class="btn-ingresar" onclick="entrar()">Ingresar</button>
-    </div>
-
-    <!-- 2. Panel Principal -->
-    <div id="panel-inicio">
-        <div class="logo-principal">SECTORES</div>
-        <div class="grid-botones">
-            <div class="card-negocio" onclick="verSector('EL_MANA')">
-                <h3>EL MANÁ</h3>
-            </div>
-            <div class="card-negocio" onclick="verSector('MBURUKUJA')">
-                <h3>MBURUKUJÁ</h3>
-            </div>
-            <div class="card-negocio" onclick="verSector('RECORDATORIOS')">
-                <h3>RECORDATORIOS</h3>
-            </div>
+    <!-- BLOQUE 1: RESUMEN TOTALIZADO -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+        <div class="tarjeta-resumen" style="background: #fdf2f2; border: 1px solid var(--dorado-tenue);">
+            <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">TOTAL GASTOS CARGADOS</p>
+            <h2 id="total-gastos-sumados" style="color: var(--cafe-suave); margin: 10px 0;">0 Gs.</h2>
+        </div>
+        <div class="tarjeta-resumen" style="background: white; border: 1px solid #eee;">
+            <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">PRODUCTOS EN INVENTARIO</p>
+            <h2 id="conteo-productos" style="color: var(--dorado-tenue); margin: 10px 0;">0</h2>
         </div>
     </div>
 
-    <!-- 3. Vista de Detalle (Interior de Sector) -->
-    <div id="vista-detalle">
-        <div class="header-detalle">
-            <button class="btn-volver" onclick="volver()">← VOLVER AL INICIO</button>
-            <h2 id="titulo-sector" style="font-family: 'Cinzel'; letter-spacing: 5px; margin:0;"></h2>
-            <div style="width: 100px;"></div>
-        </div>
+    <!-- BLOQUE 2: CARGA DE INVENTARIO Y GASTOS -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         
-        <!-- Resumen Financiero desde Firebase -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 40px;">
-            <div class="tarjeta-resumen">
-                <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">COSTO INVENTARIO</p>
-                <h3 id="fb-costo-inv">0 Gs.</h3>
+        <!-- Gestión de Inventario -->
+        <div class="calculadora-contenedor">
+            <h3 style="font-family: 'Cinzel'; font-size: 0.9rem;">📦 Cargar Nuevo Producto</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="inv-nombre" placeholder="Nombre (ej: Pan Brioche)">
+                <input type="number" id="inv-precio" placeholder="Precio de Costo (Gs)">
+                <button onclick="guardarEnInventario()" style="background: var(--cafe-suave); color: white; border: none; padding: 10px; cursor: pointer;">Guardar Producto</button>
             </div>
-            <div class="tarjeta-resumen">
-                <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">GASTOS PERSONAL</p>
-                <h3 id="fb-gastos-pers">0 Gs.</h3>
-            </div>
-            <div class="tarjeta-resumen">
-                <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">ESTADO STOCK</p>
-                <h3 id="fb-estado-inv" style="font-size: 1rem;">...</h3>
+            <div id="lista-productos-cargados" style="margin-top: 20px; font-size: 0.8rem; max-height: 150px; overflow-y: auto;">
+                <!-- Aquí aparecerán tus productos -->
             </div>
         </div>
 
-        <!-- Calculadora de Producción -->
+        <!-- Gestión de Gastos -->
         <div class="calculadora-contenedor">
-            <h3 style="font-family: 'Cinzel'; border-bottom: 1px solid #f2f2f2; padding-bottom: 10px; font-size: 1rem;">🍔 Simulador de Costos</h3>
-            <p style="font-size: 0.8rem; color: #888;">Ingresa los ingredientes para calcular el costo por unidad:</p>
-            
-            <div id="lista-ingredientes" style="margin-top: 20px;">
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" placeholder="Ingrediente (ej: Pan)" style="flex: 2;">
-                    <input type="number" placeholder="Costo Gs." class="costo-item" style="flex: 1;" oninput="calcularCostoTotal()">
-                </div>
+            <h3 style="font-family: 'Cinzel'; font-size: 0.9rem;">💸 Registrar Gasto</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="gasto-desc" placeholder="Descripción (ej: Factura ANDE)">
+                <input type="number" id="gasto-monto" placeholder="Monto (Gs)">
+                <button onclick="registrarGasto()" style="background: var(--dorado-tenue); color: white; border: none; padding: 10px; cursor: pointer;">Cargar Gasto</button>
             </div>
-            
-            <button onclick="agregarFila()" style="background: none; border: 1px dashed var(--dorado-tenue); color: var(--dorado-tenue); padding: 8px 15px; cursor: pointer; margin-top: 10px; font-size: 0.8rem;">+ Agregar Ingrediente</button>
-
-            <div style="margin-top: 30px; padding: 25px; background: var(--rosa-pastel); text-align: right;">
-                <h4 style="margin: 0; font-weight: 300; font-size: 0.8rem;">COSTO DE PRODUCCIÓN UNITARIO:</h4>
-                <h2 id="costo-final-calc" style="margin: 5px 0; color: var(--cafe-suave);">0 Gs.</h2>
-                <p id="sugerencia-venta" style="font-size: 0.75rem; color: #A67B7B; margin: 10px 0 0 0;"></p>
+            <div id="lista-gastos-recientes" style="margin-top: 20px; font-size: 0.8rem; color: #999;">
+                <!-- Aquí verás tus últimos gastos -->
             </div>
         </div>
     </div>
 
-    <script>
-        // CONFIGURACIÓN DE TU FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyDMmt5ZsafqLxGLpRhfrpMdOGk3OUvyl9E",
-            authDomain: "planificador-leidyd.firebaseapp.com",
-            projectId: "planificador-leidyd",
-            storageBucket: "planificador-leidyd.firebasestorage.app",
-            messagingSenderId: "930473531039",
-            appId: "1:930473531039:web:085de97dcd2547987b34aa",
-            databaseURL: "https://planificador-leidyd-default-rtdb.firebaseio.com"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        function entrar() {
-            document.getElementById('pantalla-bienvenida').style.display = 'none';
-            document.getElementById('panel-inicio').style.display = 'block';
-        }
-
-        function verSector(sectorId) {
-            document.getElementById('panel-inicio').style.display = 'none';
-            document.getElementById('vista-detalle').style.display = 'block';
-            document.getElementById('titulo-sector').innerText = sectorId.replace('_', ' ');
-
-            // Cargar datos reales desde Firebase
-            database.ref('negocios/' + sectorId).on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    document.getElementById('fb-costo-inv').innerText = (data.costo_inventario || 0).toLocaleString('es-PY') + " Gs.";
-                    document.getElementById('fb-gastos-pers').innerText = (data.gastos_personal || 0).toLocaleString('es-PY') + " Gs.";
-                    document.getElementById('fb-estado-inv').innerText = data.inventario || "Sin datos";
-                }
-            });
-        }
-
-        function volver() {
-            document.getElementById('vista-detalle').style.display = 'none';
-            document.getElementById('panel-inicio').style.display = 'block';
-        }
-
-        function agregarFila() {
-            const div = document.createElement('div');
-            div.style.display = 'flex';
-            div.style.gap = '10px';
-            div.style.marginBottom = '10px';
-            div.innerHTML = `
-                <input type="text" placeholder="Ingrediente" style="flex: 2;">
-                <input type="number" placeholder="Costo Gs." class="costo-item" style="flex: 1;" oninput="calcularCostoTotal()">
-            `;
-            document.getElementById('lista-ingredientes').appendChild(div);
-        }
-
-        function calcularCostoTotal() {
-            let total = 0;
-            const inputs = document.querySelectorAll('.costo-item');
-            inputs.forEach(input => {
-                total += Number(input.value) || 0;
-            });
-            document.getElementById('costo-final-calc').innerText = total.toLocaleString('es-PY') + " Gs.";
-            
-            if(total > 0) {
-                let ventaSugerida = total * 1.6; // Sugerencia con 60% de margen
-                document.getElementById('sugerencia-venta').innerText = "Precio de venta sugerido (Margen 60%): " + Math.round(ventaSugerida).toLocaleString('es-PY') + " Gs.";
-            } else {
-                document.getElementById('sugerencia-venta').innerText = "";
-            }
-        }
-    </script>
-</body>
-</html>
+    <!-- BLOQUE 3: CALCULADORA DE RECETAS -->
+    <div class="calculadora-contenedor" style="margin-top: 30px; border-top: 3px solid var(--cafe-suave);">
+        <h3 style="font-family: 'Cinzel';">🍔 Armar Costo de Hamburguesa</h3>
+        <p style="font-size: 0.8rem;">Seleccioná los productos que ya cargaste arriba:</p>
+        
+        <div id="calculadora-receta">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <select class="select-producto" style="flex: 2; padding: 10px; border: 1px solid #eee;" onchange="sumarReceta()">
+                    <option value="0">Seleccionar Producto...</option>
+                </select>
+                <input type="number" value="0" class="precio-auto" style="flex: 1; background: #f9f9f9;" readonly>
+            </div>
+        </div>
+        <button onclick="nuevaFilaReceta()" style="background: none; border: 1px dashed var(--cafe-suave); color: var(--cafe-suave); padding: 5px 15px; cursor: pointer;">+ Otro ingrediente</button>
+        
+        <div style="text-align: right; margin-top: 20px; padding: 20px; background: #FFF5F5;">
+            <h4 style="margin:0;">COSTO FINAL UNITARIO:</h4>
+            <h2 id="total-receta" style="color: var(--cafe-suave);">0 Gs.</h2>
+        </div>
+    </div>
+</div>
