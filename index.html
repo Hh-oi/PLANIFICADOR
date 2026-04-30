@@ -4,145 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador - Leidyd</title>
+    <!-- Cargamos Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
     <style>
-        /* ESTILOS GENERALES (Basados en tu diseño estético) */
-        body {
-            background-color: #FFF5F5; /* Fondo rosado muy claro */
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #8C5E5E; /* Texto en tono café/rosa oscuro */
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .portada {
-            text-align: center;
-            padding: 40px;
-            background: white;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #F2DADA;
-        }
-
-        .portada h1 {
-            font-size: 3.5rem;
-            margin: 0;
-            color: #A67B7B;
-            letter-spacing: 5px;
-            font-weight: bold;
-        }
-
-        .portada p {
-            font-size: 1.5rem;
-            margin: 0;
-            font-style: italic;
-        }
-
-        /* CUADRÍCULA DE BOTONES (Sección Inicio) */
-        .grid-inicio {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            width: 100%;
-            max-width: 700px;
-        }
-
-        .boton-sector {
-            background-color: #D4A5A5; /* El color de tus botones en la imagen */
-            color: white;
-            border: none;
-            padding: 50px 20px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .boton-sector:hover {
-            background-color: #A67B7B;
-            transform: translateY(-5px);
-        }
-
-        /* CAJA DE GESTIÓN (Aparece al hacer clic) */
-        #caja-gestion {
-            display: none;
-            margin-top: 40px;
-            width: 100%;
-            max-width: 850px;
-            background: white;
-            padding: 30px;
-            border-radius: 25px;
-            border: 2px solid #D4A5A5;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .titulo-gestion {
-            text-align: center;
-            color: #A67B7B;
-            font-size: 2rem;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #F2DADA;
-            padding-bottom: 10px;
-        }
-
-        .detalles-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .tarjeta-info {
-            background: #FFF9F9;
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid #D4A5A5;
-        }
-
-        .tarjeta-info h3 {
-            margin-top: 0;
-            font-size: 1.1rem;
-            color: #8C5E5E;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tarjeta-info p {
-            margin: 8px 0;
-            font-size: 0.95rem;
-        }
-
-        .valor {
-            font-weight: bold;
-            color: #A67B7B;
-        }
-
-        .btn-cerrar {
-            display: block;
-            margin: 30px auto 0;
-            background: #8C5E5E;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Estilo para links de CV */
-        .link-cv {
-            color: #D4A5A5;
-            text-decoration: underline;
-            font-weight: bold;
-        }
+        /* ESTILOS (Mantenemos tu diseño estético) */
+        body { background-color: #FFF5F5; font-family: 'Segoe UI', sans-serif; color: #8C5E5E; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .portada { text-align: center; padding: 40px; background: white; border-radius: 20px; width: 100%; max-width: 800px; margin-bottom: 30px; border: 1px solid #F2DADA; }
+        .portada h1 { font-size: 3.5rem; margin: 0; color: #A67B7B; letter-spacing: 5px; }
+        .grid-inicio { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 700px; }
+        .boton-sector { background-color: #D4A5A5; color: white; border: none; padding: 50px 20px; font-size: 1.4rem; font-weight: bold; border-radius: 12px; cursor: pointer; text-transform: uppercase; }
+        #caja-gestion { display: none; margin-top: 40px; width: 100%; max-width: 850px; background: white; padding: 30px; border-radius: 25px; border: 2px solid #D4A5A5; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .detalles-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .tarjeta-info { background: #FFF9F9; padding: 20px; border-radius: 15px; border-left: 5px solid #D4A5A5; }
+        .valor { font-weight: bold; color: #A67B7B; }
+        .btn-cerrar { display: block; margin: 30px auto 0; background: #8C5E5E; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -153,76 +30,67 @@
     </div>
 
     <div class="grid-inicio">
+        <button class="boton-sector" onclick="abrirGestion('EL_MANA')">El Maná</button>
+        <button class="boton-sector" onclick="abrirGestion('MBURUKUJA')">Mburukujá</button>
         <button class="boton-sector" onclick="abrirGestion('TRANSPORTE')">Transporte</button>
-        <button class="boton-sector" onclick="abrirGestion('EL MANÁ')">El Maná</button>
-        <button class="boton-sector" onclick="abrirGestion('MBURUKUJÁ')">Mburukujá</button>
         <button class="boton-sector" onclick="abrirGestion('RECORDATORIO')">Recordatorio</button>
     </div>
 
     <div id="caja-gestion">
-        <h2 id="nombre-negocio" class="titulo-gestion"></h2>
-        
+        <h2 id="nombre-negocio" style="text-align: center; color: #A67B7B;"></h2>
         <div class="detalles-container">
             <div class="tarjeta-info">
-                <h3>📦 Inventario y Disponibilidad</h3>
-                <p>Estado: <span id="disp-info" class="valor"></span></p>
-                <p>Costo Inventario: <span id="costo-inv" class="valor"></span></p>
+                <h3>📦 Inventario</h3>
+                <p>Estado: <span id="disp-info" class="valor">Cargando...</span></p>
+                <p>Costo: <span id="costo-inv" class="valor">0</span> Gs.</p>
             </div>
-
             <div class="tarjeta-info">
-                <h3>💰 Responsabilidades y Pagos</h3>
-                <p>Pendiente: <span id="pago-pend" class="valor"></span></p>
-                <p>Próxima Fecha: <span id="fecha-pago" class="valor"></span></p>
+                <h3>💰 Responsabilidades</h3>
+                <p>Pendiente: <span id="pago-pend" class="valor">Cargando...</span></p>
+                <p>Fecha: <span id="fecha-pago" class="valor">--/--</span></p>
             </div>
-
             <div class="tarjeta-info">
-                <h3>👥 Gestión de Personal</h3>
-                <p>Gastos Planilla: <span id="gasto-pers" class="valor"></span></p>
-                <p>Documentos: <a href="#" id="link-personal" class="link-cv" target="_blank">Ver Currículums</a></p>
+                <h3>👥 Personal</h3>
+                <p>Gastos: <span id="gasto-pers" class="valor">0</span> Gs.</p>
+                <p><a href="#" id="link-personal" style="color:#D4A5A5">Ver Currículums</a></p>
             </div>
         </div>
-
         <button class="btn-cerrar" onclick="cerrarGestion()">Cerrar Vista</button>
     </div>
 
     <script>
-        function abrirGestion(sector) {
-            const panel = document.getElementById('caja-gestion');
-            const titulo = document.getElementById('nombre-negocio');
-            const linkCV = document.getElementById('link-personal');
+        // CONFIGURACIÓN DE FIREBASE (Reemplaza con tus datos de la consola)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://TU_PROJECT_ID-default-rtdb.firebaseio.com",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_PROJECT_ID.appspot.com",
+            messagingSenderId: "TU_ID",
+            appId: "TU_APP_ID"
+        };
 
-            titulo.innerText = "GESTIÓN: " + sector;
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function abrirGestion(sectorId) {
+            const panel = document.getElementById('caja-gestion');
+            document.getElementById('nombre-negocio').innerText = "GESTIÓN: " + sectorId.replace('_', ' ');
             panel.style.display = 'block';
 
-            // Datos específicos por negocio
-            if (sector === 'EL MANÁ') {
-                document.getElementById('disp-info').innerText = "Insumos completos (Arroz, Carne, Verduras)";
-                document.getElementById('costo-inv').innerText = "1.500.000 Gs.";
-                document.getElementById('pago-pend').innerText = "Factura de ANDE y Proveedor de Gas";
-                document.getElementById('fecha-pago').innerText = "05 de Mayo";
-                document.getElementById('gasto-pers').innerText = "2.800.000 Gs. (Semanales)";
-                // Ruta a tus archivos en GitHub
-                linkCV.href = "https://github.com/Hh-oi/Planificador-Leidyd/tree/main/personal/mana";
-            } 
-            else if (sector === 'MBURUKUJÁ') {
-                document.getElementById('disp-info').innerText = "Stock de bebidas y repostería";
-                document.getElementById('costo-inv').innerText = "900.000 Gs.";
-                document.getElementById('pago-pend').innerText = "Alquiler del local";
-                document.getElementById('fecha-pago').innerText = "10 de Mayo";
-                document.getElementById('gasto-pers').innerText = "1.500.000 Gs.";
-                linkCV.href = "https://github.com/Hh-oi/Planificador-Leidyd/tree/main/personal/mburukuja";
-            }
-            else {
-                // Para Transporte o Recordatorio (puedes añadir más lógica aquí)
-                document.getElementById('disp-info').innerText = "Verificar estado";
-                document.getElementById('costo-inv').innerText = "---";
-                document.getElementById('pago-pend').innerText = "Ninguno";
-                document.getElementById('fecha-pago').innerText = "---";
-                document.getElementById('gasto-pers').innerText = "---";
-                linkCV.href = "#";
-            }
+            // LEER DATOS DESDE FIREBASE EN TIEMPO REAL
+            database.ref('negocios/' + sectorId).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('disp-info').innerText = data.inventario || "Sin datos";
+                    document.getElementById('costo-inv').innerText = data.costo_inventario || "0";
+                    document.getElementById('pago-pend').innerText = data.pendiente || "Nada";
+                    document.getElementById('fecha-pago').innerText = data.fecha || "--/--";
+                    document.getElementById('gasto-pers').innerText = data.gastos_personal || "0";
+                }
+            });
 
-            // Deslizar automáticamente hacia abajo para ver la caja
             panel.scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -230,6 +98,5 @@
             document.getElementById('caja-gestion').style.display = 'none';
         }
     </script>
-
 </body>
 </html>
