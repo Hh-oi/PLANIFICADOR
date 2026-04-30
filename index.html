@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador - Leidyd</title>
     
-    <!-- Fuentes elegantes -->
+    <!-- Librerías de Firebase y Fuentes Elegantes -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 
     <style>
@@ -34,7 +36,7 @@
             height: 100vh;
             text-align: center;
             background: white;
-            transition: transform 0.8s ease-in-out;
+            z-index: 100;
         }
 
         .logo-principal {
@@ -88,16 +90,14 @@
         .card-negocio {
             background: white;
             padding: 60px 20px;
-            border-radius: 2px; /* Estilo más cuadrado y minimalista */
             border: 1px solid #eee;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
         }
 
         .card-negocio:hover {
             border-color: var(--dorado-tenue);
-            transform: translateY(-5px);
+            background-color: #fafafa;
         }
 
         .card-negocio h3 {
@@ -107,7 +107,7 @@
             color: var(--cafe-suave);
         }
 
-        /* --- VISTA SECTOR (EL MANÁ) --- */
+        /* --- VISTA SECTOR --- */
         #vista-detalle {
             display: none;
             max-width: 1000px;
@@ -115,6 +115,7 @@
             padding: 40px;
             background: white;
             min-height: 80vh;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
         }
 
         .header-detalle {
@@ -131,8 +132,31 @@
             border: none;
             color: var(--dorado-tenue);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
         }
+
+        .tarjeta-resumen {
+            background: #fdf2f2;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .tarjeta-resumen h3 { margin: 5px 0; color: var(--cafe-suave); }
+
+        /* Calculadora */
+        .calculadora-contenedor {
+            background: #fff;
+            border: 1px solid var(--dorado-tenue);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        input { padding: 10px; border: 1px solid #eee; border-radius: 5px; outline: none; }
+        input:focus { border-color: var(--dorado-tenue); }
     </style>
 </head>
 <body>
@@ -144,14 +168,14 @@
         <button class="btn-ingresar" onclick="entrar()">Ingresar</button>
     </div>
 
-    <!-- 2. Panel Principal (Después de Ingresar) -->
+    <!-- 2. Panel Principal -->
     <div id="panel-inicio">
-        <div class="logo-principal">SELECCIONA UN SECTOR</div>
+        <div class="logo-principal">SECTORES</div>
         <div class="grid-botones">
-            <div class="card-negocio" onclick="verSector('EL MANÁ')">
+            <div class="card-negocio" onclick="verSector('EL_MANA')">
                 <h3>EL MANÁ</h3>
             </div>
-            <div class="card-negocio" onclick="verSector('MBURUKUJÁ')">
+            <div class="card-negocio" onclick="verSector('MBURUKUJA')">
                 <h3>MBURUKUJÁ</h3>
             </div>
             <div class="card-negocio" onclick="verSector('RECORDATORIOS')">
@@ -160,37 +184,119 @@
         </div>
     </div>
 
-    <!-- 3. Vista de Detalle (Diseñaremos el interior de El Maná aquí) -->
+    <!-- 3. Vista de Detalle (Interior de Sector) -->
     <div id="vista-detalle">
         <div class="header-detalle">
             <button class="btn-volver" onclick="volver()">← VOLVER AL INICIO</button>
             <h2 id="titulo-sector" style="font-family: 'Cinzel'; letter-spacing: 5px; margin:0;"></h2>
-            <div style="width: 100px;"></div> <!-- Espaciador -->
+            <div style="width: 100px;"></div>
         </div>
         
-        <div id="contenido-sector">
-            <!-- Aquí vamos a diseñar lo que me pidas para El Maná -->
-            <p style="text-align: center; color: #ccc; margin-top: 100px;">
-                Diseñando el panel de control...
-            </p>
+        <!-- Resumen Financiero desde Firebase -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 40px;">
+            <div class="tarjeta-resumen">
+                <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">COSTO INVENTARIO</p>
+                <h3 id="fb-costo-inv">0 Gs.</h3>
+            </div>
+            <div class="tarjeta-resumen">
+                <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">GASTOS PERSONAL</p>
+                <h3 id="fb-gastos-pers">0 Gs.</h3>
+            </div>
+            <div class="tarjeta-resumen">
+                <p style="font-size: 0.7rem; margin: 0; letter-spacing: 1px;">ESTADO STOCK</p>
+                <h3 id="fb-estado-inv" style="font-size: 1rem;">...</h3>
+            </div>
+        </div>
+
+        <!-- Calculadora de Producción -->
+        <div class="calculadora-contenedor">
+            <h3 style="font-family: 'Cinzel'; border-bottom: 1px solid #f2f2f2; padding-bottom: 10px; font-size: 1rem;">🍔 Simulador de Costos</h3>
+            <p style="font-size: 0.8rem; color: #888;">Ingresa los ingredientes para calcular el costo por unidad:</p>
+            
+            <div id="lista-ingredientes" style="margin-top: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" placeholder="Ingrediente (ej: Pan)" style="flex: 2;">
+                    <input type="number" placeholder="Costo Gs." class="costo-item" style="flex: 1;" oninput="calcularCostoTotal()">
+                </div>
+            </div>
+            
+            <button onclick="agregarFila()" style="background: none; border: 1px dashed var(--dorado-tenue); color: var(--dorado-tenue); padding: 8px 15px; cursor: pointer; margin-top: 10px; font-size: 0.8rem;">+ Agregar Ingrediente</button>
+
+            <div style="margin-top: 30px; padding: 25px; background: var(--rosa-pastel); text-align: right;">
+                <h4 style="margin: 0; font-weight: 300; font-size: 0.8rem;">COSTO DE PRODUCCIÓN UNITARIO:</h4>
+                <h2 id="costo-final-calc" style="margin: 5px 0; color: var(--cafe-suave);">0 Gs.</h2>
+                <p id="sugerencia-venta" style="font-size: 0.75rem; color: #A67B7B; margin: 10px 0 0 0;"></p>
+            </div>
         </div>
     </div>
 
     <script>
+        // CONFIGURACIÓN DE TU FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMmt5ZsafqLxGLpRhfrpMdOGk3OUvyl9E",
+            authDomain: "planificador-leidyd.firebaseapp.com",
+            projectId: "planificador-leidyd",
+            storageBucket: "planificador-leidyd.firebasestorage.app",
+            messagingSenderId: "930473531039",
+            appId: "1:930473531039:web:085de97dcd2547987b34aa",
+            databaseURL: "https://planificador-leidyd-default-rtdb.firebaseio.com"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function entrar() {
             document.getElementById('pantalla-bienvenida').style.display = 'none';
             document.getElementById('panel-inicio').style.display = 'block';
         }
 
-        function verSector(nombre) {
+        function verSector(sectorId) {
             document.getElementById('panel-inicio').style.display = 'none';
             document.getElementById('vista-detalle').style.display = 'block';
-            document.getElementById('titulo-sector').innerText = nombre;
+            document.getElementById('titulo-sector').innerText = sectorId.replace('_', ' ');
+
+            // Cargar datos reales desde Firebase
+            database.ref('negocios/' + sectorId).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('fb-costo-inv').innerText = (data.costo_inventario || 0).toLocaleString('es-PY') + " Gs.";
+                    document.getElementById('fb-gastos-pers').innerText = (data.gastos_personal || 0).toLocaleString('es-PY') + " Gs.";
+                    document.getElementById('fb-estado-inv').innerText = data.inventario || "Sin datos";
+                }
+            });
         }
 
         function volver() {
             document.getElementById('vista-detalle').style.display = 'none';
             document.getElementById('panel-inicio').style.display = 'block';
+        }
+
+        function agregarFila() {
+            const div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.gap = '10px';
+            div.style.marginBottom = '10px';
+            div.innerHTML = `
+                <input type="text" placeholder="Ingrediente" style="flex: 2;">
+                <input type="number" placeholder="Costo Gs." class="costo-item" style="flex: 1;" oninput="calcularCostoTotal()">
+            `;
+            document.getElementById('lista-ingredientes').appendChild(div);
+        }
+
+        function calcularCostoTotal() {
+            let total = 0;
+            const inputs = document.querySelectorAll('.costo-item');
+            inputs.forEach(input => {
+                total += Number(input.value) || 0;
+            });
+            document.getElementById('costo-final-calc').innerText = total.toLocaleString('es-PY') + " Gs.";
+            
+            if(total > 0) {
+                let ventaSugerida = total * 1.6; // Sugerencia con 60% de margen
+                document.getElementById('sugerencia-venta').innerText = "Precio de venta sugerido (Margen 60%): " + Math.round(ventaSugerida).toLocaleString('es-PY') + " Gs.";
+            } else {
+                document.getElementById('sugerencia-venta').innerText = "";
+            }
         }
     </script>
 </body>
