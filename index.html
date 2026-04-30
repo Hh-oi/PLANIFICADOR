@@ -4,32 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador - Leidyd</title>
-    <!-- Cargamos Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    
+    <!-- Cargamos las librerías necesarias de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
 
     <style>
-        /* ESTILOS (Mantenemos tu diseño estético) */
         body { background-color: #FFF5F5; font-family: 'Segoe UI', sans-serif; color: #8C5E5E; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .portada { text-align: center; padding: 40px; background: white; border-radius: 20px; width: 100%; max-width: 800px; margin-bottom: 30px; border: 1px solid #F2DADA; }
-        .portada h1 { font-size: 3.5rem; margin: 0; color: #A67B7B; letter-spacing: 5px; }
+        .portada { text-align: center; padding: 40px; background: white; border-radius: 20px; width: 100%; max-width: 800px; margin-bottom: 30px; border: 1px solid #F2DADA; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .portada h1 { font-size: 3rem; margin: 0; color: #A67B7B; letter-spacing: 5px; text-transform: uppercase; }
         .grid-inicio { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 700px; }
-        .boton-sector { background-color: #D4A5A5; color: white; border: none; padding: 50px 20px; font-size: 1.4rem; font-weight: bold; border-radius: 12px; cursor: pointer; text-transform: uppercase; }
-        #caja-gestion { display: none; margin-top: 40px; width: 100%; max-width: 850px; background: white; padding: 30px; border-radius: 25px; border: 2px solid #D4A5A5; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .detalles-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .tarjeta-info { background: #FFF9F9; padding: 20px; border-radius: 15px; border-left: 5px solid #D4A5A5; }
-        .valor { font-weight: bold; color: #A67B7B; }
-        .btn-cerrar { display: block; margin: 30px auto 0; background: #8C5E5E; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; }
+        .boton-sector { background-color: #D4A5A5; color: white; border: none; padding: 40px 20px; font-size: 1.2rem; font-weight: bold; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .boton-sector:hover { background-color: #A67B7B; transform: translateY(-2px); }
+        
+        #caja-gestion { display: none; margin-top: 30px; width: 100%; max-width: 800px; background: white; padding: 25px; border-radius: 20px; border: 2px solid #D4A5A5; }
+        .tarjeta-info { background: #FFF9F9; padding: 15px; border-radius: 12px; border-left: 5px solid #D4A5A5; margin-bottom: 10px; }
+        .valor { font-weight: bold; color: #A67B7B; font-size: 1.1rem; }
+        .btn-cerrar { display: block; margin: 20px auto 0; background: #8C5E5E; color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="portada">
-        <p>Leidyd</p>
+        <p style="font-style: italic; margin: 0;">Leidyd Villalba</p>
         <h1>PLANIFICADOR</h1>
     </div>
 
     <div class="grid-inicio">
+        <!-- Los IDs de aquí deben ser iguales a los de Firebase -->
         <button class="boton-sector" onclick="abrirGestion('EL_MANA')">El Maná</button>
         <button class="boton-sector" onclick="abrirGestion('MBURUKUJA')">Mburukujá</button>
         <button class="boton-sector" onclick="abrirGestion('TRANSPORTE')">Transporte</button>
@@ -37,37 +39,31 @@
     </div>
 
     <div id="caja-gestion">
-        <h2 id="nombre-negocio" style="text-align: center; color: #A67B7B;"></h2>
-        <div class="detalles-container">
+        <h2 id="nombre-negocio" style="text-align: center; color: #A67B7B; text-transform: uppercase;"></h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
             <div class="tarjeta-info">
                 <h3>📦 Inventario</h3>
-                <p>Estado: <span id="disp-info" class="valor">Cargando...</span></p>
+                <p>Estado: <span id="disp-info" class="valor">...</span></p>
                 <p>Costo: <span id="costo-inv" class="valor">0</span> Gs.</p>
-            </div>
-            <div class="tarjeta-info">
-                <h3>💰 Responsabilidades</h3>
-                <p>Pendiente: <span id="pago-pend" class="valor">Cargando...</span></p>
-                <p>Fecha: <span id="fecha-pago" class="valor">--/--</span></p>
             </div>
             <div class="tarjeta-info">
                 <h3>👥 Personal</h3>
                 <p>Gastos: <span id="gasto-pers" class="valor">0</span> Gs.</p>
-                <p><a href="#" id="link-personal" style="color:#D4A5A5">Ver Currículums</a></p>
             </div>
         </div>
         <button class="btn-cerrar" onclick="cerrarGestion()">Cerrar Vista</button>
     </div>
 
     <script>
-        // CONFIGURACIÓN DE FIREBASE (Reemplaza con tus datos de la consola)
+        // Aquí es donde pusimos el link que me preguntaste (databaseURL)
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://TU_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "TU_PROJECT_ID",
-            storageBucket: "TU_PROJECT_ID.appspot.com",
-            messagingSenderId: "TU_ID",
-            appId: "TU_APP_ID"
+            apiKey: "AIzaSyDMmt5ZsafqLxGLpRhfrpMdOGk3OUvyl9E",
+            authDomain: "planificador-leidyd.firebaseapp.com",
+            projectId: "planificador-leidyd",
+            storageBucket: "planificador-leidyd.firebasestorage.app",
+            messagingSenderId: "930473531039",
+            appId: "1:930473531039:web:085de97dcd2547987b34aa",
+            databaseURL: "https://planificador-leidyd-default-rtdb.firebaseio.com"
         };
 
         // Inicializar Firebase
@@ -76,18 +72,19 @@
 
         function abrirGestion(sectorId) {
             const panel = document.getElementById('caja-gestion');
-            document.getElementById('nombre-negocio').innerText = "GESTIÓN: " + sectorId.replace('_', ' ');
+            document.getElementById('nombre-negocio').innerText = sectorId.replace('_', ' ');
             panel.style.display = 'block';
 
-            // LEER DATOS DESDE FIREBASE EN TIEMPO REAL
+            // Buscar datos en la ruta que creaste (negocios/Sector)
             database.ref('negocios/' + sectorId).on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     document.getElementById('disp-info').innerText = data.inventario || "Sin datos";
-                    document.getElementById('costo-inv').innerText = data.costo_inventario || "0";
-                    document.getElementById('pago-pend').innerText = data.pendiente || "Nada";
-                    document.getElementById('fecha-pago').innerText = data.fecha || "--/--";
-                    document.getElementById('gasto-pers').innerText = data.gastos_personal || "0";
+                    // .toLocaleString() pone los puntos automáticamente a los números
+                    document.getElementById('costo-inv').innerText = (data.costo_inventario || 0).toLocaleString('es-PY');
+                    document.getElementById('gasto-pers').innerText = (data.gastos_personal || 0).toLocaleString('es-PY');
+                } else {
+                    alert("Aún no hay datos cargados para este sector en Firebase.");
                 }
             });
 
